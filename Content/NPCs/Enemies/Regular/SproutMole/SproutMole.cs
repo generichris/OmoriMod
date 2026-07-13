@@ -87,3 +87,5 @@ public class SproutMole : OmoriBehaviourNPC
     {
         behaviourManager.PerformFindFrame(frameHeight);
     }
+
+}

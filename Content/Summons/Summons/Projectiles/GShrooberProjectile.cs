@@ -169,3 +169,4 @@ namespace OmoriMod.Content.Summons.Summons.Projectiles
             return false;
         }
     }
+}

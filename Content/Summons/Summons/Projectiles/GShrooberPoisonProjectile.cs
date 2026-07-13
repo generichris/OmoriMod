@@ -34,3 +34,4 @@ namespace OmoriMod.Content.Summons.Summons.Projectiles
             target.AddBuff(BuffID.Poisoned, 200);
         }
     }
+}

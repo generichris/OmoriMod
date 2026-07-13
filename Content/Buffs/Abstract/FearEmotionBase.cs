@@ -193,3 +193,4 @@ namespace OmoriMod.Content.Buffs.Abstract
             FearModifyBuffText(ref buffName, ref tip, ref rare);
         }
     }
+}
