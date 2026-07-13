@@ -1,5 +1,6 @@
 using OmoriMod.Content.Items.BuffItems;
 using OmoriMod.Content.Items.Health;
+using OmoriMod.Content.Items.Placeable.Banners;
 using OmoriMod.Content.NPCs.Classes;
 using OmoriMod.Content.NPCs.Enemies.Regular.SproutMole.Behaviours;
 using OmoriMod.Content.NPCs.General_Behaviours.Actives;
@@ -40,6 +41,9 @@ public class SproutMole : OmoriBehaviourNPC
         NPC.knockBackResist = 0.8f;
         NPC.aiStyle = -1;
         NPC.netUpdate = true;
+
+        Banner = Type;
+        BannerItem = ModContent.ItemType<SproutMoleBanner>();
 
         behaviourManager = new NPCBehaviourManager(this, _frames);
         behaviourManager.AddBehaviour(new IdleWander(1));
@@ -83,4 +87,3 @@ public class SproutMole : OmoriBehaviourNPC
     {
         behaviourManager.PerformFindFrame(frameHeight);
     }
-}

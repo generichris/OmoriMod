@@ -28,7 +28,7 @@ namespace OmoriMod.Content.Buffs.Abstract
         // ===== Life Regen Increase =====
         // Values are in raw lifeRegen units
         private const float PLAYER_LIFE_REGEN_INCREASE_MAX = 40.0f;
-        private const float PLAYER_LIFE_REGEN_INCREASE_RATE = 22.0f;
+        private const float PLAYER_LIFE_REGEN_INCREASE_RATE = 15.0f;
         private const float PLAYER_LIFE_REGEN_INCREASE_STARTING_VALUE = 1.0f;
 
 
@@ -193,4 +193,3 @@ namespace OmoriMod.Content.Buffs.Abstract
             FearModifyBuffText(ref buffName, ref tip, ref rare);
         }
     }
-}

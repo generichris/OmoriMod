@@ -521,6 +521,31 @@ Items: {
 		DisplayName: Firecracker
 		Tooltip: ""
 	}
+
+	SproutMoleBanner: {
+		Tooltip: ""
+		DisplayName: Sprout Mole Banner
+	}
+
+	SproutMoleDish: {
+		Tooltip: ""
+		DisplayName: Sprout Mole Dish
+	}
+
+	SproutMoleMissileRemote: {
+		DisplayName: Sprout Mole Missile Remote
+		Tooltip: ""
+	}
+
+	FlyingSproutMole: {
+		DisplayName: Flying Sprout Mole
+		Tooltip: ""
+	}
+
+	PlantationSpear: {
+		Tooltip: ""
+		DisplayName: Plantation Spear
+	}
 }
 
 Buffs: {
@@ -623,6 +648,11 @@ Buffs: {
 		DisplayName: Fear
 		Description: Mods.OmoriMod.Buffs.Fear.Description
 	}
+
+	FlyingSproutMoleBuff: {
+		DisplayName: Flying Sprout Mole Buff
+		Description: Mods.OmoriMod.Buffs.FlyingSproutMoleBuff.Description
+	}
 }
 
 NPCs: {
@@ -636,6 +666,36 @@ NPCs: {
 	Squizzard.DisplayName: Squizzard
 	Rabbit.DisplayName: Rabbit?
 	Snaley.DisplayName: Snaley
+
+	Basil: {
+		TownNPCMood: {
+			Princess_LovesNPC: I like {NPCName}.
+			LikeNPC_Princess: I like {NPCName}.
+			HateCrowded: I hate how crowded I am.
+			DislikeCrowded: I dislike how crowded I am.
+			LoveSpace: I love having so much space.
+			FarFromHome: I am too far from home.
+			NoHome: I hate not having a home.
+			Content: I am content.
+		}
+
+		DisplayName: Basil
+	}
+
+	Mari: {
+		TownNPCMood: {
+			Princess_LovesNPC: I like {NPCName}.
+			LikeNPC_Princess: I like {NPCName}.
+			HateCrowded: I hate how crowded I am.
+			DislikeCrowded: I dislike how crowded I am.
+			LoveSpace: I love having so much space.
+			FarFromHome: I am too far from home.
+			NoHome: I hate not having a home.
+			Content: I am content.
+		}
+
+		DisplayName: Mari
+	}
 }
 
 Projectiles: {
@@ -704,6 +764,9 @@ Projectiles: {
 	SquizzardBeam.DisplayName: Squizzard Beam
 	GShrooberProjectile.DisplayName: G Shroober Projectile
 	GShrooberPoisonProjectile.DisplayName: G Shroober Poison Projectile
+	SproutMoleMissileProjectile.DisplayName: Sprout Mole Missile Projectile
+	FlyingSproutMoleBulletProjectile.DisplayName: Flying Sprout Mole Bullet Projectile
+	FlyingSproutMoleProjectile.DisplayName: Flying Sprout Mole Projectile
 }
 
 DamageClasses.FocusDamage.DisplayName: Focus Damage

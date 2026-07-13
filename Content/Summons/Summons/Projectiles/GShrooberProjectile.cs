@@ -75,6 +75,8 @@ namespace OmoriMod.Content.Summons.Summons.Projectiles
             HoverMovement(distanceToIdlePosition, vectorToIdlePosition);
             PhantasmalVisuals();
 
+            Projectile.rotation = 0f;
+
             // Simple idle bob animation
             Projectile.frameCounter++;
             if (Projectile.frameCounter >= 8)
@@ -167,4 +169,3 @@ namespace OmoriMod.Content.Summons.Summons.Projectiles
             return false;
         }
     }
-}

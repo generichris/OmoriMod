@@ -31,7 +31,6 @@ namespace OmoriMod.Content.Summons.Summons.Projectiles
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            target.AddBuff(BuffID.Poisoned, 300); // 5 seconds of Poisoned
+            target.AddBuff(BuffID.Poisoned, 200);
         }
     }
-}
