@@ -2,13 +2,55 @@
 
 Thanks for wanting to help improve OmoriMod.
 
+## Development setup
+
+This project includes VS Code build and launch configurations for building the mod and debugging it in tModLoader. The configurations use the `TMLSTEAMPATH` environment variable so that each contributor can use their own tModLoader installation.
+
+From the repository root, run the setup script in PowerShell:
+
+```powershell
+.\PowerShell\setup.ps1
+```
+
+Enter the path to your tModLoader Steam installation when prompted, or press Enter to use the default Steam location. The script saves the path as a permanent user environment variable.
+
+If PowerShell reports that script execution is disabled, run the following command once and then rerun the setup script:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
+
+After setup, fully close and reopen VS Code so it can read the new environment variable. To build and debug the mod, open the **Run and Debug** panel (`Ctrl+Shift+D`), select **Launch tModLoader**, and press `F5`.
+
+For additional setup troubleshooting, see the [Dev Setup section in the README](README.md#dev-setup-vs-code).
+
+## Formatting and linting
+
+Before opening a pull request, run the formatter from the repository root:
+
+```powershell
+dotnet format OmoriMod.csproj --include . --severity info
+```
+
+The `--include .` option limits formatting to files inside OmoriMod and prevents `dotnet format` from formatting the sibling tModLoader source tree.
+
+To reproduce the lint check used by GitHub Actions without modifying files, run:
+
+```powershell
+dotnet restore OmoriMod.csproj
+dotnet format OmoriMod.csproj --include . --no-restore --verify-no-changes --severity warn --verbosity minimal
+```
+
+The explicit restore makes `--no-restore` safe and avoids restoring the project twice. The lint command exits with a nonzero status if it finds files that would be changed.
+
 ## Workflow
 
 1. Fork this repository.
 2. Create a branch in your fork for your change.
 3. Make a focused change with a clear commit message.
-4. Open a pull request against `K3LV0N/OmoriMod:main`.
-5. Wait for maintainer review. A code owner must approve before the PR can be merged.
+4. Run the formatting and linting commands above.
+5. Open a pull request against `K3LV0N/OmoriMod:main`.
+6. Wait for maintainer review. A code owner must approve before the PR can be merged.
 
 Direct pushes to `main` are restricted. Pull requests are the normal path for changes.
 

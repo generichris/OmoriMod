@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch tModLoader",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build mod",
+      "program": "dotnet",
+      "args": ["tModLoader.dll"],
+      "cwd": "${env:TMLSTEAMPATH}",
+      "console": "integratedTerminal",
+      "stopAtEntry": false
+    }
+  ]
+}

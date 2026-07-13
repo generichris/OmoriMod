@@ -1,25 +1,25 @@
-using Terraria.ModLoader;
 using OmoriMod.Content.Items.Abstract_Classes;
 using OmoriMod.Content.Items.Abstract_Classes.BaseClasses;
 using OmoriMod.Content.Items.Ammo.Bullets.Regular.Tier1;
 using OmoriMod.Content.Projectiles.Friendly.Bullets.Tier1;
 
-namespace OmoriMod.Content.Items.Ammo.Bullets.Unlimited.Tier1
-{
-    public class InfiniteHappyBullet : HappyItem
-    {
-        InfiniteHappyBullet()
-        {
-            itemTypeForResearch = ItemTypeForResearch.Weapons_Tools_Armor_Accessory;
-        }
-        public override void SetDefaults()
-        {
-            EmotionItemCloneWithDifferentProjectile<InfiniteAngryBullet>(ModContent.ProjectileType<HappyBulletProjectile>());
-        }
+using Terraria.ModLoader;
 
-        public override void AddRecipes()
-        {
-            MakeEndlessAmmoRecipe(ModContent.ItemType<HappyBullet>());
-        }
+namespace OmoriMod.Content.Items.Ammo.Bullets.Unlimited.Tier1;
+
+public class InfiniteHappyBullet : HappyItem
+{
+    InfiniteHappyBullet()
+    {
+        itemTypeForResearch = ItemTypeForResearch.Weapons_Tools_Armor_Accessory;
+    }
+    public override void SetDefaults()
+    {
+        EmotionItemCloneWithDifferentProjectile<InfiniteAngryBullet>(ModContent.ProjectileType<HappyBulletProjectile>());
+    }
+
+    public override void AddRecipes()
+    {
+        MakeEndlessAmmoRecipe(ModContent.ItemType<HappyBullet>());
     }
 }

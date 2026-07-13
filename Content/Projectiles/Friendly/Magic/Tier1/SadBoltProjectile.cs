@@ -1,24 +1,24 @@
-﻿using Terraria.ModLoader;
-using OmoriMod.Content.Projectiles.Abstract_Classes;
+﻿using OmoriMod.Content.Projectiles.Abstract_Classes;
 
-namespace OmoriMod.Content.Projectiles.Friendly.Magic.Tier1
+using Terraria.ModLoader;
+
+namespace OmoriMod.Content.Projectiles.Friendly.Magic.Tier1;
+
+public class SadBoltProjectile : SadProjectile
 {
-    public class SadBoltProjectile : SadProjectile
+    public override void SetDefaults()
     {
-        public override void SetDefaults()
-        {
-            Projectile.CloneDefaults(ModContent.ProjectileType<AngryBoltProjectile>());
-        }
+        Projectile.CloneDefaults(ModContent.ProjectileType<AngryBoltProjectile>());
+    }
 
-        public override void OnKill(int timeLeft)
-        {
-            OnKillNoDrop(timeLeft);
-        }
+    public override void OnKill(int timeLeft)
+    {
+        OnKillNoDrop(timeLeft);
+    }
 
-        public override bool PreAI()
-        {
-            MakeDust();
-            return true;
-        }
+    public override bool PreAI()
+    {
+        MakeDust();
+        return true;
     }
 }

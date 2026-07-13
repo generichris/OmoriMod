@@ -1,35 +1,35 @@
-using Terraria.ID;
-using Terraria.ModLoader;
 using OmoriMod.Content.Items.Abstract_Classes;
 using OmoriMod.Content.Items.Abstract_Classes.BaseClasses;
 using OmoriMod.Content.Items.Weapons.Melee.Tier4;
 using OmoriMod.Content.Projectiles.Friendly.Melee.Pan;
 using OmoriMod.Systems.AbilitySystem.ItemAbilities.Registries;
 
-namespace OmoriMod.Content.Items.Weapons.Melee.Tier5
+using Terraria.ID;
+using Terraria.ModLoader;
+
+namespace OmoriMod.Content.Items.Weapons.Melee.Tier5;
+
+public class ChlorPan : HappyItem
 {
-    public class ChlorPan : HappyItem
+    ChlorPan()
     {
-        ChlorPan()
-        {
-            itemTypeForResearch = ItemTypeForResearch.Weapons_Tools_Armor_Accessory;
-        }
-        public override void SetDefaults()
-        {
-            InnatePassiveAbilityID = (int)PassiveAbilityRegistry.PassiveAbilityID.QUINTUPLE_SEEKING_PHANTOM_PAN;
-            EmotionItemCloneWithDifferentProjectile<ChlorBat>(ModContent.ProjectileType<PanProjectileFiveSeeking>());
-        }
+        itemTypeForResearch = ItemTypeForResearch.Weapons_Tools_Armor_Accessory;
+    }
+    public override void SetDefaults()
+    {
+        InnatePassiveAbilityID = (int)PassiveAbilityRegistry.PassiveAbilityID.QUINTUPLE_SEEKING_PHANTOM_PAN;
+        EmotionItemCloneWithDifferentProjectile<ChlorBat>(ModContent.ProjectileType<PanProjectileFiveSeeking>());
+    }
 
 
 
-        public override void AddRecipes()
-        {
-            MakeUpgradeRecipe(
-                baseItemID: ModContent.ItemType<HallowPan>(),
-                extraItemID: ItemID.ChlorophyteBar,
-                extraItemAmount: 25,
-                craftingStationID: TileID.MythrilAnvil
-                );
-        }
+    public override void AddRecipes()
+    {
+        MakeUpgradeRecipe(
+            baseItemID: ModContent.ItemType<HallowPan>(),
+            extraItemID: ItemID.ChlorophyteBar,
+            extraItemAmount: 25,
+            craftingStationID: TileID.MythrilAnvil
+            );
     }
 }

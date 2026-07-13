@@ -1,18 +1,18 @@
-﻿using Terraria;
-using OmoriMod.Content.Buffs.Abstract;
+﻿using OmoriMod.Content.Buffs.Abstract;
 
-namespace OmoriMod.Content.Buffs.AngryBuff
+using Terraria;
+
+namespace OmoriMod.Content.Buffs.AngryBuff;
+
+public class AngryNoTime : AngryEmotionBase
 {
-    public class AngryNoTime : AngryEmotionBase
+    AngryNoTime()
     {
-        AngryNoTime()
-        {
-            emotionLevel = 1;
-            dustSpawnFrequency = 1;
-        }
-        public override void SetStaticDefaults()
-        {
-            Main.buffNoTimeDisplay[Type] = true;
-        }
+        emotionLevel = 1;
+        dustSpawnFrequency = 1;
+    }
+    public override void SetStaticDefaults()
+    {
+        Main.buffNoTimeDisplay[Type] = true;
     }
 }

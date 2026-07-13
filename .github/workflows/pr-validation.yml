@@ -9,62 +9,115 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 env:
   TML_VERSION: v2026.05.3.0
   MOD_NAME: OmoriMod
   MOD_DIR: ${{ github.workspace }}/tModLoader/ModSources/OmoriMod
   TML_DIR: ${{ github.workspace }}/tModLoader
+  TML_SAVE_DIR: ${{ github.workspace }}/tml-save
 
 jobs:
-  validate:
-    name: Lint, build, and smoke test
+  lint:
+    uses: ./.github/workflows/lint.yml
+
+  compile:
+    name: Compile mod
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-    env:
-      TML_SAVE_DIR: ${{ runner.temp }}/tml-save
+    timeout-minutes: 10
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           path: tModLoader/ModSources/OmoriMod
 
       - name: Set up .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 8.0.x
 
-      - name: Check import ordering
-        working-directory: ${{ env.MOD_DIR }}
-        shell: pwsh
-        run: |
-          ./sort_imports.ps1
+      - name: Cache tModLoader install
+        id: tml-cache
+        uses: actions/cache@v5
+        with:
+          path: ${{ env.TML_DIR }}
+          key: tmloader-${{ env.TML_VERSION }}-${{ runner.os }}-${{ hashFiles('tModLoader/ModSources/OmoriMod/.github/scripts/setup-tmodloader.sh') }}
 
-          git diff --exit-code
-          if ($LASTEXITCODE -ne 0) {
-            Write-Error "Import ordering is out of date. Run ./sort_imports.ps1 locally and commit the result."
-            exit 1
-          }
-
-      - name: Download pinned tModLoader
+      - name: Set up tModLoader
+        if: steps.tml-cache.outputs.cache-hit != 'true'
         working-directory: ${{ github.workspace }}
         shell: bash
-        run: |
-          set -euo pipefail
-
-          curl --fail --location --retry 3 \
-            --output tModLoader.zip \
-            "https://github.com/tModLoader/tModLoader/releases/download/${TML_VERSION}/tModLoader.zip"
-          unzip -q tModLoader.zip -d "${TML_DIR}"
-
-          chmod +x "${TML_DIR}"/*.sh || true
+        run: bash "${MOD_DIR}/.github/scripts/setup-tmodloader.sh"
 
       - name: Build mod
         working-directory: ${{ env.MOD_DIR }}
         shell: bash
+        env:
+          LD_LIBRARY_PATH: ${{ env.TML_DIR }}/Libraries/Native/Linux
         run: |
           set -euo pipefail
-          dotnet build OmoriMod.csproj --configuration Release
+          mkdir -p "${TML_SAVE_DIR}"
+          dotnet build OmoriMod.csproj \
+            --configuration Release \
+            -p:ExtraBuildModFlags="-tmlsavedirectory ${TML_SAVE_DIR}"
+
+      - name: Verify built mod
+        shell: bash
+        run: |
+          set -euo pipefail
+          tmod_file="${TML_SAVE_DIR}/Mods/${MOD_NAME}.tmod"
+          if [[ ! -f "${tmod_file}" ]]; then
+            echo "Could not find built mod at ${tmod_file}" >&2
+            exit 1
+          fi
+
+      - name: Upload built mod
+        uses: actions/upload-artifact@v7
+        with:
+          name: omorimod-tmod
+          path: ${{ env.TML_SAVE_DIR }}/Mods/${{ env.MOD_NAME }}.tmod
+          if-no-files-found: error
+          retention-days: 1
+
+  runtime:
+    name: Run mod in tModLoader
+    needs: compile
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+        with:
+          path: tModLoader/ModSources/OmoriMod
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Cache tModLoader install
+        id: tml-cache
+        uses: actions/cache@v5
+        with:
+          path: ${{ env.TML_DIR }}
+          key: tmloader-${{ env.TML_VERSION }}-${{ runner.os }}-${{ hashFiles('tModLoader/ModSources/OmoriMod/.github/scripts/setup-tmodloader.sh') }}
+
+      - name: Set up tModLoader
+        if: steps.tml-cache.outputs.cache-hit != 'true'
+        working-directory: ${{ github.workspace }}
+        shell: bash
+        run: bash "${MOD_DIR}/.github/scripts/setup-tmodloader.sh"
+
+      - name: Download built mod
+        uses: actions/download-artifact@v8
+        with:
+          name: omorimod-tmod
+          path: ${{ env.TML_SAVE_DIR }}/Mods
 
       - name: Prepare smoke-test save
         id: smoke_save
@@ -73,17 +126,16 @@ jobs:
         run: |
           set -euo pipefail
 
-          tmod_file="$(find "${MOD_DIR}/bin" -type f -name "${MOD_NAME}.tmod" | sort | tail -n 1)"
-          if [[ -z "${tmod_file}" ]]; then
-            echo "Could not find built ${MOD_NAME}.tmod under ${MOD_DIR}/bin" >&2
+          mods_dir="${TML_SAVE_DIR}/Mods"
+          tmod_file="${mods_dir}/${MOD_NAME}.tmod"
+          if [[ ! -f "${tmod_file}" ]]; then
+            echo "Could not find downloaded mod at ${tmod_file}" >&2
             exit 1
           fi
 
-          mods_dir="${TML_SAVE_DIR}/Mods"
           worlds_dir="${TML_SAVE_DIR}/Worlds"
           mkdir -p "${mods_dir}" "${worlds_dir}"
 
-          cp "${tmod_file}" "${mods_dir}/${MOD_NAME}.tmod"
           printf '["%s"]\n' "${MOD_NAME}" > "${mods_dir}/enabled.json"
 
           server_config="${RUNNER_TEMP}/tml-serverconfig.txt"
@@ -101,7 +153,6 @@ jobs:
           EOF
 
           {
-            echo "tmod_file=${tmod_file}"
             echo "mods_dir=${mods_dir}"
             echo "server_config=${server_config}"
           } >> "${GITHUB_OUTPUT}"
@@ -109,6 +160,8 @@ jobs:
       - name: Run headless tModLoader server smoke test
         working-directory: ${{ env.TML_DIR }}
         shell: bash
+        env:
+          LD_LIBRARY_PATH: ${{ env.TML_DIR }}/Libraries/Native/Linux
         run: |
           set -euo pipefail
 
@@ -139,8 +192,19 @@ jobs:
             fi
           } > "${combined_logs}"
 
-          if ! grep -Eiq "Loading.*${MOD_NAME}|${MOD_NAME}.*loaded|${MOD_NAME}" "${combined_logs}"; then
-            echo "The smoke test did not find evidence that ${MOD_NAME} was loaded." >&2
+          mod_display_name="$(sed -nE 's/^[[:space:]]*displayName[[:space:]]*=[[:space:]]*(.+)[[:space:]]*$/\1/p' "${MOD_DIR}/build.txt" | head -n 1)"
+          if [[ -z "${mod_display_name}" ]]; then
+            echo "Could not read displayName from build.txt." >&2
+            exit 1
+          fi
+
+          if ! grep -Fqi "Sandboxing: ${mod_display_name}" "${combined_logs}"; then
+            echo "The smoke test did not find evidence that ${mod_display_name} was loaded." >&2
+            exit 1
+          fi
+
+          if ! grep -Eiq "Listening on port|Server started" "${combined_logs}"; then
+            echo "The tModLoader server did not reach its ready state." >&2
             exit 1
           fi
 
@@ -151,7 +215,7 @@ jobs:
 
       - name: Upload tModLoader logs
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: tmodloader-smoke-test-logs
           path: |

@@ -1,23 +1,22 @@
 ﻿using OmoriMod.Content.Projectiles.Abstract_Classes;
 
-namespace OmoriMod.Content.Projectiles.Friendly.Bullets.Tier1
+namespace OmoriMod.Content.Projectiles.Friendly.Bullets.Tier1;
+
+public class HappyBulletProjectile : HappyProjectile
 {
-    public class HappyBulletProjectile : HappyProjectile
+    public override void SetDefaults()
     {
-        public override void SetDefaults()
-        {
-            SetBulletDefaults();
-        }
+        SetBulletDefaults();
+    }
 
-        public override void OnKill(int timeLeft)
-        {
-            OnKillNoDrop(timeLeft);
-        }
+    public override void OnKill(int timeLeft)
+    {
+        OnKillNoDrop(timeLeft);
+    }
 
-        public override bool PreAI()
-        {
-            MakeDust();
-            return true;
-        }
+    public override bool PreAI()
+    {
+        MakeDust();
+        return true;
     }
 }

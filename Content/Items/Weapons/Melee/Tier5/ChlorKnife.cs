@@ -1,35 +1,35 @@
-using Terraria.ID;
-using Terraria.ModLoader;
 using OmoriMod.Content.Items.Abstract_Classes;
 using OmoriMod.Content.Items.Abstract_Classes.BaseClasses;
 using OmoriMod.Content.Items.Weapons.Melee.Tier4;
 using OmoriMod.Content.Projectiles.Friendly.Melee.Knife;
 using OmoriMod.Systems.AbilitySystem.ItemAbilities.Registries;
 
-namespace OmoriMod.Content.Items.Weapons.Melee.Tier5
+using Terraria.ID;
+using Terraria.ModLoader;
+
+namespace OmoriMod.Content.Items.Weapons.Melee.Tier5;
+
+public class ChlorKnife : SadItem
 {
-    public class ChlorKnife : SadItem
+    ChlorKnife()
     {
-        ChlorKnife()
-        {
-            itemTypeForResearch = ItemTypeForResearch.Weapons_Tools_Armor_Accessory;
-        }
-        public override void SetDefaults()
-        {
-            InnatePassiveAbilityID = (int)PassiveAbilityRegistry.PassiveAbilityID.QUINTUPLE_SEEKING_PHANTOM_KNIFE;
-            EmotionItemCloneWithDifferentProjectile<ChlorBat>(ModContent.ProjectileType<KnifeProjectileFiveSeeking>());
-        }
+        itemTypeForResearch = ItemTypeForResearch.Weapons_Tools_Armor_Accessory;
+    }
+    public override void SetDefaults()
+    {
+        InnatePassiveAbilityID = (int)PassiveAbilityRegistry.PassiveAbilityID.QUINTUPLE_SEEKING_PHANTOM_KNIFE;
+        EmotionItemCloneWithDifferentProjectile<ChlorBat>(ModContent.ProjectileType<KnifeProjectileFiveSeeking>());
+    }
 
 
 
-        public override void AddRecipes()
-        {
-            MakeUpgradeRecipe(
-                baseItemID: ModContent.ItemType<HallowKnife>(),
-                extraItemID: ItemID.ChlorophyteBar,
-                extraItemAmount: 25,
-                craftingStationID: TileID.MythrilAnvil
-                );
-        }
+    public override void AddRecipes()
+    {
+        MakeUpgradeRecipe(
+            baseItemID: ModContent.ItemType<HallowKnife>(),
+            extraItemID: ItemID.ChlorophyteBar,
+            extraItemAmount: 25,
+            craftingStationID: TileID.MythrilAnvil
+            );
     }
 }

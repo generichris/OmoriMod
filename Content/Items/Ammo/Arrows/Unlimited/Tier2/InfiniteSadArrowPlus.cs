@@ -1,27 +1,27 @@
-using Terraria.ModLoader;
 using OmoriMod.Content.Items.Abstract_Classes;
 using OmoriMod.Content.Items.Abstract_Classes.BaseClasses;
 using OmoriMod.Content.Items.Ammo.Arrows.Regular.Tier2;
 using OmoriMod.Content.Projectiles.Friendly.Arrows.Tier2.NoDrops;
 
-namespace OmoriMod.Content.Items.Ammo.Arrows.Unlimited.Tier2
-{
-    public class InfiniteSadArrowPlus : SadItem
-    {
-        InfiniteSadArrowPlus()
-        {
-            itemTypeForResearch = ItemTypeForResearch.Weapons_Tools_Armor_Accessory;
-        }
-        public override void SetDefaults()
-        {
-            EmotionItemCloneWithDifferentProjectile<InfiniteAngryArrowPlus>(ModContent.ProjectileType<SadArrowPlusProjectileNoDrop>());
-            Item.damage = 50;
-            Item.shootSpeed = 30f;
-        }
+using Terraria.ModLoader;
 
-        public override void AddRecipes()
-        {
-            MakeEndlessAmmoRecipe(ModContent.ItemType<SadArrowPlus>());
-        }
+namespace OmoriMod.Content.Items.Ammo.Arrows.Unlimited.Tier2;
+
+public class InfiniteSadArrowPlus : SadItem
+{
+    InfiniteSadArrowPlus()
+    {
+        itemTypeForResearch = ItemTypeForResearch.Weapons_Tools_Armor_Accessory;
+    }
+    public override void SetDefaults()
+    {
+        EmotionItemCloneWithDifferentProjectile<InfiniteAngryArrowPlus>(ModContent.ProjectileType<SadArrowPlusProjectileNoDrop>());
+        Item.damage = 50;
+        Item.shootSpeed = 30f;
+    }
+
+    public override void AddRecipes()
+    {
+        MakeEndlessAmmoRecipe(ModContent.ItemType<SadArrowPlus>());
     }
 }

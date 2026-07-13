@@ -1,21 +1,20 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
 
-namespace OmoriMod.Content.NPCs.Classes
+namespace OmoriMod.Content.NPCs.Classes;
+
+/// <summary>
+/// Base class for all <see cref="ModNPC"/> in my mod.
+/// Defines <see cref="NPC.ai"/>[0] as <see cref="AI_Timer"/>
+/// </summary>
+public abstract class OmoriModNPC : ModNPC
 {
     /// <summary>
-    /// Base class for all <see cref="ModNPC"/> in my mod.
-    /// Defines <see cref="NPC.ai"/>[0] as <see cref="AI_Timer"/>
+    /// A timer available to use for AI.
     /// </summary>
-    public abstract class OmoriModNPC : ModNPC
+    public float AI_Timer
     {
-        /// <summary>
-        /// A timer available to use for AI.
-        /// </summary>
-        public float AI_Timer
-        {
-            get => NPC.ai[0];
-            set => NPC.ai[0] = value;
-        }
+        get => NPC.ai[0];
+        set => NPC.ai[0] = value;
     }
 }

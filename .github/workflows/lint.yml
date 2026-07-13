@@ -1,0 +1,61 @@
+name: Lint
+
+on:
+  push:
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lint-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TML_VERSION: v2026.05.3.0
+  MOD_DIR: ${{ github.workspace }}/tModLoader/ModSources/OmoriMod
+  TML_DIR: ${{ github.workspace }}/tModLoader
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+        with:
+          path: tModLoader/ModSources/OmoriMod
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Cache tModLoader install
+        id: tml-cache
+        uses: actions/cache@v5
+        with:
+          path: ${{ env.TML_DIR }}
+          key: tmloader-${{ env.TML_VERSION }}-${{ runner.os }}-${{ hashFiles('tModLoader/ModSources/OmoriMod/.github/scripts/setup-tmodloader.sh') }}
+
+      - name: Set up tModLoader
+        if: steps.tml-cache.outputs.cache-hit != 'true'
+        working-directory: ${{ github.workspace }}
+        shell: bash
+        run: bash "${MOD_DIR}/.github/scripts/setup-tmodloader.sh"
+
+      - name: Restore
+        working-directory: ${{ env.MOD_DIR }}
+        run: dotnet restore OmoriMod.csproj
+
+      - name: Format check
+        working-directory: ${{ env.MOD_DIR }}
+        run: |
+          dotnet format OmoriMod.csproj \
+            --include . \
+            --no-restore \
+            --verify-no-changes \
+            --severity info \
+            --verbosity minimal

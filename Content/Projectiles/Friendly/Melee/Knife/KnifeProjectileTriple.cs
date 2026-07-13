@@ -1,25 +1,25 @@
-﻿using Terraria.ModLoader;
-using OmoriMod.Content.Projectiles.Abstract_Classes;
+﻿using OmoriMod.Content.Projectiles.Abstract_Classes;
 using OmoriMod.Content.Projectiles.Friendly.Melee.Bat;
 
-namespace OmoriMod.Content.Projectiles.Friendly.Melee.Knife
+using Terraria.ModLoader;
+
+namespace OmoriMod.Content.Projectiles.Friendly.Melee.Knife;
+
+public class KnifeProjectileTriple : SadProjectile
 {
-    public class KnifeProjectileTriple : SadProjectile
+    public override void SetDefaults()
     {
-        public override void SetDefaults()
-        {
-            Projectile.CloneDefaults(ModContent.ProjectileType<BatProjectile>());
-        }
+        Projectile.CloneDefaults(ModContent.ProjectileType<BatProjectile>());
+    }
 
-        public override void OnKill(int timeleft)
-        {
-            OnKillNoDrop(timeleft, noSound: true);
-            MakeDust();
-        }
+    public override void OnKill(int timeleft)
+    {
+        OnKillNoDrop(timeleft, noSound: true);
+        MakeDust();
+    }
 
-        public override void AI()
-        {
-            AI_SplittingProjectile<KnifeProjectile>(maxAngle: 10, ProjectileAmount: 3);
-        }
+    public override void AI()
+    {
+        AI_SplittingProjectile<KnifeProjectile>(maxAngle: 10, ProjectileAmount: 3);
     }
 }

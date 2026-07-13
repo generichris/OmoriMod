@@ -2,17 +2,16 @@
 using OmoriMod.Systems.State_Management.Behaviour_Info;
 using OmoriMod.Systems.State_Management.NPCs.NPC_Behaviour;
 
-namespace OmoriMod.Content.NPCs.General_Behaviours.Tests
+namespace OmoriMod.Content.NPCs.General_Behaviours.Tests;
+
+/// <summary>
+/// Fucking launches the NPC into orbit. For testing
+/// </summary>
+public class ShootToTheMoonAhhBehaviour() : NPCBehaviour(0)
 {
-    /// <summary>
-    /// Fucking launches the NPC into orbit. For testing
-    /// </summary>
-    public class ShootToTheMoonAhhBehaviour() : NPCBehaviour(0)
+
+    protected override void AI(OmoriBehaviourNPC npc, BehaviourInfo behaviourInfo)
     {
-        
-        protected override void AI(OmoriBehaviourNPC npc, BehaviourInfo behaviourInfo)
-        {
-            npc.NPC.velocity.Y = -80f;
-        }
+        npc.NPC.velocity.Y = -80f;
     }
 }
