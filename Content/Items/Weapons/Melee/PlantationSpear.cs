@@ -17,6 +17,7 @@ namespace OmoriMod.Content.Items.Weapons.Melee
         {
             Item.width = 32;
             Item.height = 32;
+            Item.scale = 2f;
 
             Item.damage = 25;
             Item.DamageType = DamageClass.Melee;

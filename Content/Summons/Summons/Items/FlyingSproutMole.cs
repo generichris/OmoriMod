@@ -30,7 +30,7 @@ namespace OmoriMod.Content.Summons.Summons.Items
             Item.mana = 10;
             Item.width = 34;
             Item.height = 34;
-            Item.scale = 0.2f; // source art is 170x170px, scale down to ~34x34
+            Item.scale = 1f;
             Item.useTime = 36;
             Item.useAnimation = 36;
             Item.useStyle = ItemUseStyleID.Swing;

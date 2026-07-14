@@ -18,7 +18,7 @@ namespace OmoriMod.Content.Projectiles.Friendly.SproutMole
         {
             Projectile.width = 32;
             Projectile.height = 78;
-            Projectile.scale = 0.2f; // source art is 270x450px, scale down to ~54x90
+            Projectile.scale = 2f;
 
             Projectile.friendly = true;
             Projectile.hostile = false;

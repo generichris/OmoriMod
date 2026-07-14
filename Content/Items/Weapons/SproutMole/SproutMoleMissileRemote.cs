@@ -20,7 +20,7 @@ namespace OmoriMod.Content.Items.Weapons.SproutMole
         {
             Item.width = 33;
             Item.height = 43;
-            Item.scale = 0.25f;
+            Item.scale = 1f;
 
             Item.damage = 100;
             Item.DamageType = DamageClass.Ranged;
