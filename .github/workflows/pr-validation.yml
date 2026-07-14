@@ -167,7 +167,7 @@ jobs:
 
           server_output="${RUNNER_TEMP}/tml-server-output.log"
           set +e
-          timeout 120s dotnet tModLoader.dll \
+          timeout -k 10s 120s dotnet tModLoader.dll \
             -server \
             -tmlsavedirectory "${TML_SAVE_DIR}" \
             -modpath "${{ steps.smoke_save.outputs.mods_dir }}" \
