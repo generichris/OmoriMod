@@ -192,8 +192,7 @@ jobs:
             fi
           } > "${combined_logs}"
 
-          mod_display_name="$(sed -nE 's/^[[:space:]]*displayName[[:space:]]*=[[:space:]]*(.+)[[:space:]]*$/\1/p' "${MOD_DIR}/build.txt" | head -n 1)"
-          if [[ -z "${mod_display_name}" ]]; then
+          mod_display_name="$(sed -nE 's/^[[:space:]]*displayName[[:space:]]*=[[:space:]]*(.+)[[:space:]]*$/\1/p' "${MOD_DIR}/build.txt" | tr -d '\r' | head -n 1)"
             echo "Could not read displayName from build.txt." >&2
             exit 1
           fi
