@@ -18,6 +18,7 @@ public class GlobalShopNPC : GlobalNPC
             shop.Add<RainCloud>();
             shop.Add<AirHorn>();
             shop.Add<Something>();
+            shop.Add<Hector>();
             shop.Add<Firecracker>(Condition.Hardmode);
         }
 

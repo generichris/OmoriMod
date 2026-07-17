@@ -546,6 +546,11 @@ Items: {
 		Tooltip: ""
 		DisplayName: Plantation Spear
 	}
+
+	Hector: {
+		DisplayName: Hector
+		Tooltip: "Can talk, but is very shy. Has a chance to heal you 20 hearts"
+	}
 }
 
 Buffs: {
