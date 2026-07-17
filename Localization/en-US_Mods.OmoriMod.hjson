@@ -549,7 +549,7 @@ Items: {
 
 	Hector: {
 		DisplayName: Hector
-		Tooltip: "Can talk, but is very shy. Has a chance to heal you 20 hearts"
+		Tooltip: "Can talk, but is very shy. Has a chance to heal you 20 health"
 	}
 }
 
