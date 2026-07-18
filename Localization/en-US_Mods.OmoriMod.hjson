@@ -549,7 +549,12 @@ Items: {
 
 	Hector: {
 		DisplayName: Hector
-		Tooltip: "Can talk, but is very shy. Has a chance to heal you 20 health"
+		Tooltip: Can talk, but is very shy. Has a chance to heal you 20 health
+	}
+
+	SunflowerStaff: {
+		DisplayName: Sunflower Staff
+		Tooltip: ""
 	}
 }
 
@@ -772,6 +777,7 @@ Projectiles: {
 	SproutMoleMissileProjectile.DisplayName: Sprout Mole Missile Projectile
 	FlyingSproutMoleBulletProjectile.DisplayName: Flying Sprout Mole Bullet Projectile
 	FlyingSproutMoleProjectile.DisplayName: Flying Sprout Mole Projectile
+	SunflowerProjectile.DisplayName: Sunflower Projectile
 }
 
 DamageClasses.FocusDamage.DisplayName: Focus Damage
