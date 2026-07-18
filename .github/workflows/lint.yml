@@ -33,18 +33,34 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
-      - name: Cache tModLoader install
-        id: tml-cache
+      - name: Cache tModLoader archive
         uses: actions/cache@v5
         with:
-          path: ${{ env.TML_DIR }}
+          path: ${{ runner.temp }}/tModLoader-${{ env.TML_VERSION }}.zip
           key: tmloader-${{ env.TML_VERSION }}-${{ runner.os }}-${{ hashFiles('tModLoader/ModSources/OmoriMod/.github/scripts/setup-tmodloader.sh') }}
 
       - name: Set up tModLoader
-        if: steps.tml-cache.outputs.cache-hit != 'true'
         working-directory: ${{ github.workspace }}
         shell: bash
         run: bash "${MOD_DIR}/.github/scripts/setup-tmodloader.sh"
+
+      - name: Verify checkout integrity
+        working-directory: ${{ env.MOD_DIR }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          actual_sha="$(git rev-parse HEAD)"
+          if [[ "${actual_sha}" != "${GITHUB_SHA}" ]]; then
+            echo "Expected checkout ${GITHUB_SHA}, but found ${actual_sha} after restoring the tModLoader cache." >&2
+            exit 1
+          fi
+
+          if [[ -n "$(git status --porcelain=v1)" ]]; then
+            echo "The mod checkout was modified while restoring the tModLoader cache:" >&2
+            git status --short >&2
+            exit 1
+          fi
 
       - name: Restore
         working-directory: ${{ env.MOD_DIR }}

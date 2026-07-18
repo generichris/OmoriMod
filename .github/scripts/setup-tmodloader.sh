@@ -6,9 +6,14 @@ set -euo pipefail
 : "${RUNNER_TEMP:?RUNNER_TEMP must be set}"
 
 archive="${RUNNER_TEMP}/tModLoader-${TML_VERSION}.zip"
-curl --fail --location --retry 3 \
-  --output "${archive}" \
-  "https://github.com/tModLoader/tModLoader/releases/download/${TML_VERSION}/tModLoader.zip"
+if [[ ! -f "${archive}" ]]; then
+  curl --fail --location --retry 3 \
+    --output "${archive}" \
+    "https://github.com/tModLoader/tModLoader/releases/download/${TML_VERSION}/tModLoader.zip"
+else
+  echo "Using cached tModLoader archive at ${archive}."
+fi
+
 unzip -q "${archive}" -d "${TML_DIR}"
 
 chmod +x "${TML_DIR}"/*.sh || true
