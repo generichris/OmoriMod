@@ -556,6 +556,11 @@ Items: {
 		DisplayName: Sunflower Staff
 		Tooltip: ""
 	}
+
+	SharpenedFlower: {
+		DisplayName: Sharpened Flower
+		Tooltip: ""
+	}
 }
 
 Buffs: {
@@ -662,6 +667,11 @@ Buffs: {
 	FlyingSproutMoleBuff: {
 		DisplayName: Flying Sprout Mole Buff
 		Description: Mods.OmoriMod.Buffs.FlyingSproutMoleBuff.Description
+	}
+
+	SharpenedFlowerBuff: {
+		DisplayName: Sharpened Flower Buff
+		Description: Mods.OmoriMod.Buffs.SharpenedFlowerBuff.Description
 	}
 }
 
@@ -778,6 +788,7 @@ Projectiles: {
 	FlyingSproutMoleBulletProjectile.DisplayName: Flying Sprout Mole Bullet Projectile
 	FlyingSproutMoleProjectile.DisplayName: Flying Sprout Mole Projectile
 	SunflowerProjectile.DisplayName: Sunflower Projectile
+	SharpenedFlowerProjectile.DisplayName: Sharpened Flower Projectile
 }
 
 DamageClasses.FocusDamage.DisplayName: Focus Damage
