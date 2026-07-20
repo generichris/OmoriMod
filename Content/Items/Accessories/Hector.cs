@@ -123,15 +123,15 @@ namespace OmoriMod.Content.Items.Accessories
                 string line = Lines[Main.rand.Next(Lines.Length)];
                 CombatText.NewText(Player.getRect(), Color.White, line, dramatic: true);
                 SoundEngine.PlaySound(SoundID.Item35, Player.position);
-                cooldown = 100;
+                cooldown = 1000;
                 if (Main.rand.NextBool(6))
                 {
-                    Player.statLife += 500;
+                    Player.statLife += 20;
                     if (Player.statLife > Player.statLifeMax2)
                     {
                         Player.statLife = Player.statLifeMax2;
                     }
-                    Player.HealEffect(500);
+                    Player.HealEffect(20);
                     CombatText.NewText(Player.getRect(), Color.Green, "Heal", dramatic: true);
                 }
             }

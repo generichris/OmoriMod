@@ -561,6 +561,16 @@ Items: {
 		DisplayName: Sharpened Flower
 		Tooltip: ""
 	}
+
+	Leaf: {
+		DisplayName: Leaf
+		Tooltip: ""
+	}
+
+	PlantationGun: {
+		DisplayName: Plantation Gun
+		Tooltip: ""
+	}
 }
 
 Buffs: {
@@ -789,6 +799,7 @@ Projectiles: {
 	FlyingSproutMoleProjectile.DisplayName: Flying Sprout Mole Projectile
 	SunflowerProjectile.DisplayName: Sunflower Projectile
 	SharpenedFlowerProjectile.DisplayName: Sharpened Flower Projectile
+	LeafProjectile.DisplayName: Leaf Projectile
 }
 
 DamageClasses.FocusDamage.DisplayName: Focus Damage
