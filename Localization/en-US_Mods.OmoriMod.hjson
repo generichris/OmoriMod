@@ -571,6 +571,26 @@ Items: {
 		DisplayName: Plantation Gun
 		Tooltip: ""
 	}
+
+	PearGoober: {
+		DisplayName: Pear Goober
+		Tooltip: Hmmm Pears
+	}
+
+	SadGoober: {
+		DisplayName: Sad Goober
+		Tooltip: Named Bubble
+	}
+
+	AngryGoober: {
+		DisplayName: Angry Goober
+		Tooltip: Named yankin'
+	}
+
+	HappyGoober: {
+		DisplayName: Happy Goober
+		Tooltip: ""
+	}
 }
 
 Buffs: {
@@ -682,6 +702,26 @@ Buffs: {
 	SharpenedFlowerBuff: {
 		DisplayName: Sharpened Flower Buff
 		Description: Mods.OmoriMod.Buffs.SharpenedFlowerBuff.Description
+	}
+
+	PearGooberBuff: {
+		DisplayName: Pear Goober Buff
+		Description: Mods.OmoriMod.Buffs.PearGooberBuff.Description
+	}
+
+	SadGooberBuff: {
+		DisplayName: Sad Goober Buff
+		Description: Mods.OmoriMod.Buffs.SadGooberBuff.Description
+	}
+
+	AngryGooberBuff: {
+		DisplayName: Angry Goober Buff
+		Description: Mods.OmoriMod.Buffs.AngryGooberBuff.Description
+	}
+
+	HappyGooberBuff: {
+		DisplayName: Happy Goober Buff
+		Description: Mods.OmoriMod.Buffs.HappyGooberBuff.Description
 	}
 }
 
@@ -800,6 +840,14 @@ Projectiles: {
 	SunflowerProjectile.DisplayName: Sunflower Projectile
 	SharpenedFlowerProjectile.DisplayName: Sharpened Flower Projectile
 	LeafProjectile.DisplayName: Leaf Projectile
+	PearGooberBulletProjectile.DisplayName: Pear Goober Bullet Projectile
+	PearGooberProjectile.DisplayName: Pear Goober Projectile
+	SadGooberBulletProjectile.DisplayName: Sad Goober Bullet Projectile
+	SadGooberProjectile.DisplayName: Sad Goober Projectile
+	AngryGooberBulletProjectile.DisplayName: Angry Goober Bullet Projectile
+	AngryGooberProjectile.DisplayName: Angry Goober Projectile
+	HappyGooberBulletProjectile.DisplayName: Happy Goober Bullet Projectile
+	HappyGooberProjectile.DisplayName: Happy Goober Projectile
 }
 
 DamageClasses.FocusDamage.DisplayName: Focus Damage
