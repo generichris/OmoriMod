@@ -359,8 +359,7 @@ public abstract class HelperMethodModProjectile : ConstructModProjectile
     protected Player FindClosestPlayer(float maxDetectDistance = -1)
     {
         Player target = Main.player[Player.FindClosest(Projectile.Center, 1, 1)];
-        if ((target.Center - Projectile.Center).Length() > maxDetectDistance && maxDetectDistance > 0) { return null; }
-        else { return target; }
+        return (target.Center - Projectile.Center).Length() > maxDetectDistance && maxDetectDistance > 0 ? null : target;
     }
 
     /// <summary>

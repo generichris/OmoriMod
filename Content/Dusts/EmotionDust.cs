@@ -1,4 +1,4 @@
-using OmoriMod.Systems.EmotionSystem;
+using OmoriMod.Content.Systems.EmotionSystem;
 
 using Terraria;
 using Terraria.ModLoader;
@@ -16,5 +16,4 @@ public class EmotionDust : ModDust
         dust.noLight = true;
         dust.scale = 1f;
     }
-
 }

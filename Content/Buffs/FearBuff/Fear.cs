@@ -1,19 +1,12 @@
-using Terraria.ModLoader;
 using OmoriMod.Content.Buffs.Abstract;
 
-namespace OmoriMod.Content.Buffs.FearBuff
-{
-    public class Fear : FearEmotionBase
-    {
-        Fear()
-        {
-            emotionLevel = 1;
-            dustSpawnFrequency = 1;
-        }
+namespace OmoriMod.Content.Buffs.FearBuff;
 
-        public override void SetStaticDefaults()
-        {
-            nextStageEmotionType = null;
-        }
+public class Fear : FearEmotionBase
+{
+    Fear()
+    {
+        EmotionTier = 1;
+        _dustSpawnFrequency = 1;
     }
 }

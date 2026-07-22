@@ -1,5 +1,6 @@
 using OmoriMod.Content.Items.Abstract_Classes;
 using OmoriMod.Content.Items.Abstract_Classes.BaseClasses;
+using OmoriMod.Content.Items.Abstract_Classes.Emotion_Classes;
 using OmoriMod.Content.Items.BuffItems;
 using OmoriMod.Content.Projectiles.Friendly.Bullets.Tier1;
 

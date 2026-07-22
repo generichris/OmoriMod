@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace OmoriMod.Systems.AbilitySystem.ItemAbilities.Registries;
+namespace OmoriMod.Content.Systems.AbilitySystem.ItemAbilities.Registries;
 
 public static class ActiveAbilityRegistry
 {
@@ -9,7 +9,7 @@ public static class ActiveAbilityRegistry
     // ID Enum
     public enum ActiveAbilityID : int
     {
-        NONE = 0
+        None = 0
     }
 
     public static void Initialize()
@@ -29,11 +29,7 @@ public static class ActiveAbilityRegistry
 
     public static IItemAbility GetAbility(int id)
     {
-        if (_abilities.TryGetValue(id, out IItemAbility ability))
-        {
-            return ability;
-        }
-        return null;
+        return _abilities.TryGetValue(id, out IItemAbility ability) ? ability : null;
     }
 
     public static IItemAbility GetAbility(ActiveAbilityID id)

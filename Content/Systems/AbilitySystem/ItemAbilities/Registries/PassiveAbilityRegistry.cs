@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using OmoriMod.Content.Projectiles.Friendly.Melee.Bat;
 using OmoriMod.Content.Projectiles.Friendly.Melee.Knife;
 using OmoriMod.Content.Projectiles.Friendly.Melee.Pan;
-using OmoriMod.Systems.AbilitySystem.ItemAbilities.Passives;
+using OmoriMod.Content.Systems.AbilitySystem.ItemAbilities.Passives;
 
 using Terraria.ModLoader;
 
-namespace OmoriMod.Systems.AbilitySystem.ItemAbilities.Registries;
+namespace OmoriMod.Content.Systems.AbilitySystem.ItemAbilities.Registries;
 
 public static class PassiveAbilityRegistry
 {
@@ -16,7 +16,7 @@ public static class PassiveAbilityRegistry
     // ID Enum
     public enum PassiveAbilityID : int
     {
-        NONE = 0,
+        None = 0,
         SINGLE_PHANTOM_BAT = 1,
         TRIPLE_PHANTOM_BAT = 2,
         QUINTUPLE_PHANTOM_BAT = 3,
@@ -65,11 +65,7 @@ public static class PassiveAbilityRegistry
 
     public static IItemAbility GetAbility(int id)
     {
-        if (_abilities.TryGetValue(id, out IItemAbility ability))
-        {
-            return ability;
-        }
-        return null;
+        return _abilities.TryGetValue(id, out IItemAbility ability) ? ability : null;
     }
 
     public static IItemAbility GetAbility(PassiveAbilityID id)

@@ -1,8 +1,8 @@
-using OmoriMod.Systems.AbilitySystem.ItemAbilities.Registries;
+using OmoriMod.Content.Systems.AbilitySystem.ItemAbilities.Registries;
 
 using Terraria.ModLoader;
 
-namespace OmoriMod.Systems.AbilitySystem;
+namespace OmoriMod.Content.Systems.AbilitySystem;
 
 public class AbilitySystem : ModSystem
 {

@@ -3,6 +3,13 @@
 
 This is a content expansion mod for Terraria based on Omori built using the tModLoader API. This README serves as a guide to understanding the mod's file structure and naming conventions.
 
+## Documentation
+
+See the [documentation index](docs/README.md) for all project guides, including:
+
+- the [emotion system architecture and extension guide](docs/EmotionSystem.md); and
+- the [contribution guide](docs/CONTRIBUTING.md).
+
 ## 📁 File Structure
 
 The project is organized hierarchically for clarity and scalability, and is typically defined as such:
@@ -84,12 +91,17 @@ Environment variables are only picked up by **new** processes. Fully close and r
 ### 3. Launch the mod
 
 - Open the **Run and Debug** panel (`Ctrl+Shift+D`)
-- Select **Launch tModLoader** from the dropdown at the top
+- Select the profile matching your C# debugger:
+  - **Launch tModLoader — Microsoft C#** when using the Microsoft C# debugger without ReSharper.
+  - **Launch tModLoader — ReSharper** when ReSharper 2026.2 or newer is enabled.
 - Click the green play button (or press `F5`)
 
 This builds the mod and launches tModLoader. Breakpoints placed in your mod's code will bind once tModLoader loads the mod assembly.
 
+ReSharper 2026.2 introduced its own `coreclr` debugger, which requires the managed `tModLoader.dll` program and its .NET runtime executable to be configured separately. The Microsoft profile intentionally preserves the original `dotnet tModLoader.dll` workflow. VS Code remembers the last selected launch profile, so selecting the appropriate profile is normally a one-time step.
+
 ### Troubleshooting
 
-- **Nothing launches:** Make sure "Launch tModLoader" is selected in the Run and Debug dropdown before pressing play.
+- **Nothing launches:** Make sure the launch profile matching your enabled debugger is selected before pressing play.
+- **ReSharper reports that `dotnet` does not exist:** Select **Launch tModLoader — ReSharper**. The Microsoft profile uses a relative executable name that ReSharper's debugger does not accept.
 - **`dotnet-tModLoader.dll` / command not found errors:** Your `TMLSTEAMPATH` variable likely isn't set or VS Code hasn't been restarted since running the setup script. Open a new terminal and run `echo $env:TMLSTEAMPATH` to confirm it's set correctly, and `Test-Path "$env:TMLSTEAMPATH\tModLoader.dll"` to confirm the path is valid.

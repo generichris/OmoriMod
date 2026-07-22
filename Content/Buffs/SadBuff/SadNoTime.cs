@@ -8,8 +8,8 @@ public class SadNoTime : SadEmotionBase
 {
     SadNoTime()
     {
-        emotionLevel = 1;
-        dustSpawnFrequency = 1;
+        EmotionTier = 1;
+        _dustSpawnFrequency = 1;
     }
     public override void SetStaticDefaults()
     {

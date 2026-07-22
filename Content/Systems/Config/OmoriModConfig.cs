@@ -2,7 +2,7 @@
 
 using Terraria.ModLoader.Config;
 
-namespace OmoriMod.Systems.Config;
+namespace OmoriMod.Content.Systems.Config;
 
 public class OmoriModConfig : ModConfig
 {

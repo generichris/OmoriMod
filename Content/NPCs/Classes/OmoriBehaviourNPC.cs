@@ -1,4 +1,4 @@
-﻿using OmoriMod.Systems.State_Management.NPCs;
+﻿using OmoriMod.Content.Systems.State_Management.NPCs;
 
 namespace OmoriMod.Content.NPCs.Classes;
 

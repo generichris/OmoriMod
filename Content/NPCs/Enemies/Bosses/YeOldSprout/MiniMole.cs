@@ -1,7 +1,7 @@
 using OmoriMod.Content.NPCs.Classes;
 using OmoriMod.Content.NPCs.General_Behaviours.Actives.Chase_Player;
 using OmoriMod.Content.NPCs.General_Behaviours.Backgrounds;
-using OmoriMod.Systems.State_Management.NPCs;
+using OmoriMod.Content.Systems.State_Management.NPCs;
 
 using Terraria;
 using Terraria.ID;

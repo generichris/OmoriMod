@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 
 using OmoriMod.Content.Projectiles.Abstract_Classes;
-using OmoriMod.Systems.State_Management.Behaviour_Info;
-using OmoriMod.Systems.State_Management.Projectiles.Projectile_Behaviour;
-using OmoriMod.Util;
+using OmoriMod.Content.Systems.State_Management.Behaviour_Info;
+using OmoriMod.Content.Systems.State_Management.Projectiles.Projectile_Behaviour;
+using OmoriMod.Content.Util;
 
-namespace OmoriMod.Systems.State_Management.Projectiles;
+namespace OmoriMod.Content.Systems.State_Management.Projectiles;
 
 /// <summary>
 /// Manages and executes AI behaviours for an <see cref="OmoriBehaviourProjectile"/>. 
@@ -37,44 +37,44 @@ public class ProjectileBehaviourManager(OmoriBehaviourProjectile projectile, int
     /// <summary>
     /// The currently selected <see cref="ProjectileBehaviour"/> that this manager is running.
     /// </summary>
-    public ProjectileBehaviour SelectedBehaviour { get => selectedBehaviour; }
+    public ProjectileBehaviour SelectedBehaviour { get => _selectedBehaviour; }
 
     /// <summary>
     /// The internal reference to the currently selected behaviour. Use <see cref="SelectedBehaviour"/> to access publicly.
     /// </summary>
-    private ProjectileBehaviour selectedBehaviour = null;
+    private ProjectileBehaviour _selectedBehaviour;
 
     /// <summary>
-    /// The index of the currently selected behaviour in <see cref="behaviourList"/>.
+    /// The index of the currently selected behaviour in <see cref="_behaviourList"/>.
     /// </summary>
-    private int selectedBehaviourIndex = 0;
+    private int _selectedBehaviourIndex;
 
     /// <summary>
     /// Holds animation and AI information for the behaviours managed by this class.
     /// </summary>
-    private readonly BehaviourInfo behaviourInfo = new BehaviourInfo(totalFrames);
+    private readonly BehaviourInfo _behaviourInfo = new(totalFrames);
 
     /// <summary>
     /// The projectile that this behaviour manager is controlling.
     /// </summary>
-    private readonly OmoriBehaviourProjectile projectile = projectile;
+    private readonly OmoriBehaviourProjectile _projectile = projectile;
 
     /// <summary>
     /// Timer used to track the duration spent on the idle behaviour between active behaviours.
     /// </summary>
-    private TickTimer timeBetweenBehaviours = new TickTimer();
+    private TickTimer _timeBetweenBehaviours = new();
 
     /// <summary>
     /// Random number generator used for randomly selecting behaviours.
     /// </summary>
-    private readonly Random random = new Random();
-    private readonly List<ProjectileBehaviour> behaviourList = [];
-    private readonly List<ProjectileBackgroundBehaviour> backgroundBehaviourList = [];
-    private ProjectileBehaviour idleBehaviour = null;
+    private readonly Random _random = new();
+    private readonly List<ProjectileBehaviour> _behaviourList = [];
+    private readonly List<ProjectileBackgroundBehaviour> _backgroundBehaviourList = [];
+    private ProjectileBehaviour _idleBehaviour;
 
 
     /// <summary>
-    /// Adds a new animation to <see cref="behaviourInfo"/> using a <see cref="EntityAnimation"/>.
+    /// Adds a new animation to <see cref="_behaviourInfo"/> using a <see cref="EntityAnimation"/>.
     /// <para>
     /// You can select this animation later via <see cref="SelectAnimation(string)"/> by passing in <paramref name="animationName"/>.
     /// </para>
@@ -84,11 +84,11 @@ public class ProjectileBehaviourManager(OmoriBehaviourProjectile projectile, int
     /// <returns><c>true</c> if the animation was successfully added, <c>false</c> if an animation with the same name already exists.</returns>
     public bool AddAnimation(string animationName, EntityAnimation animation)
     {
-        return behaviourInfo.AddAnimation(animationName, animation);
+        return _behaviourInfo.AddAnimation(animationName, animation);
     }
 
     /// <summary>
-    /// Adds a new animation to <see cref="behaviourInfo"/> using a range of frame indices.
+    /// Adds a new animation to <see cref="_behaviourInfo"/> using a range of frame indices.
     /// <para>
     /// You can select this animation later via <see cref="SelectAnimation(string)"/> by passing in <paramref name="animationName"/>.
     /// </para>
@@ -110,38 +110,38 @@ public class ProjectileBehaviourManager(OmoriBehaviourProjectile projectile, int
     /// <returns><c>true</c> if the animation was successfully selected; <c>false</c> if no animation with that name exists.</returns>
     public bool SelectAnimation(string animationName)
     {
-        return behaviourInfo.SelectAnimation(animationName);
+        return _behaviourInfo.SelectAnimation(animationName);
     }
 
     /// <summary>
     /// Adds a new <see cref="ProjectileBehaviour"/> to the behaviour manager.
     /// </summary>
-    /// <param name="behaviour">The behaviour to add to <see cref="behaviourList"/>.</param>
+    /// <param name="behaviour">The behaviour to add to <see cref="_behaviourList"/>.</param>
     public void AddBehaviour(ProjectileBehaviour behaviour)
     {
-        behaviourList.Add(behaviour);
+        _behaviourList.Add(behaviour);
     }
 
     /// <summary>
     /// Sets the idle behaviour of the projectile.
     /// <para>
     /// The idle behaviour runs when no active behaviour is being executed, such as during 
-    /// <see cref="timeBetweenBehaviours"/> delays.
+    /// <see cref="_timeBetweenBehaviours"/> delays.
     /// </para>
     /// </summary>
     /// <param name="behaviour">The behaviour to set as the idle behaviour.</param>
     public void SetIdleBehaviour(ProjectileBehaviour behaviour)
     {
-        idleBehaviour = behaviour;
+        _idleBehaviour = behaviour;
     }
 
     /// <summary>
     /// Adds a <see cref="ProjectileBackgroundBehaviour"/> to this manager.
     /// </summary>
-    /// <param name="behaviour">The <see cref="ProjectileBackgroundBehaviour"/> to be added to <see cref="backgroundBehaviourList"/></param>
+    /// <param name="behaviour">The <see cref="ProjectileBackgroundBehaviour"/> to be added to <see cref="_backgroundBehaviourList"/></param>
     public void AddBackgroundBehaviour(ProjectileBackgroundBehaviour behaviour)
     {
-        backgroundBehaviourList.Add(behaviour);
+        _backgroundBehaviourList.Add(behaviour);
     }
 
     /// <summary>
@@ -150,21 +150,21 @@ public class ProjectileBehaviourManager(OmoriBehaviourProjectile projectile, int
     /// <param name="tickTimer">The <see cref="TickTimer"/> representing the idle time.</param>
     public void SetTimeBetweenBehaviours(TickTimer tickTimer)
     {
-        timeBetweenBehaviours = tickTimer;
+        _timeBetweenBehaviours = tickTimer;
     }
 
     /// <summary>
-    /// Resets the current <see cref="selectedBehaviour"/> and selects 
-    /// a new one from <see cref="behaviourList"/> at the specified index.
+    /// Resets the current <see cref="_selectedBehaviour"/> and selects 
+    /// a new one from <see cref="_behaviourList"/> at the specified index.
     /// </summary>
     /// <param name="behaviourIndex">
     /// The index of the new behaviour to select.
     /// </param>
     private void SelectNewBehaviour(int behaviourIndex)
     {
-        selectedBehaviour.Reset();
-        behaviourInfo.ResetExitStatus();
-        selectedBehaviour = behaviourList[behaviourIndex];
+        _selectedBehaviour.Reset();
+        _behaviourInfo.ResetExitStatus();
+        _selectedBehaviour = _behaviourList[behaviourIndex];
     }
 
     /// <summary>
@@ -180,70 +180,70 @@ public class ProjectileBehaviourManager(OmoriBehaviourProjectile projectile, int
     private bool PerformBehaviour(ProjectileBehaviour selectedBehaviour, BehaviourInfo info)
     {
         if (selectedBehaviour == null) { return true; }
-        selectedBehaviour.PerformAI(projectile, info);
+        selectedBehaviour.PerformAI(_projectile, info);
         return selectedBehaviour.IsDone;
     }
 
     /// <summary>
-    /// Selects a new behaviour at random from <see cref="behaviourList"/>.
+    /// Selects a new behaviour at random from <see cref="_behaviourList"/>.
     /// </summary>
     /// <param name="init">
-    /// If <c>true</c>, this is being called at the start of <see cref="PerformAI(Action{bool})"/>, 
-    /// and the current <see cref="selectedBehaviour"/> will be initialized if not already set.
+    /// If <c>true</c>, this is being called at the start of <see cref="PerformAi"/>, 
+    /// and the current <see cref="_selectedBehaviour"/> will be initialized if not already set.
     /// If <c>false</c>, a new random behaviour will be selected, replacing the current one.
     /// </param>
     private void RandomSelector(bool init)
     {
-        if (init) { selectedBehaviour ??= behaviourList[random.Next(behaviourList.Count)]; }
+        if (init) { _selectedBehaviour ??= _behaviourList[_random.Next(_behaviourList.Count)]; }
         else
         {
-            SelectNewBehaviour(random.Next(behaviourList.Count));
+            SelectNewBehaviour(_random.Next(_behaviourList.Count));
         }
     }
 
     /// <summary>
-    /// Selects a new behaviour from <see cref="behaviourList"/> in order, looping 
+    /// Selects a new behaviour from <see cref="_behaviourList"/> in order, looping 
     /// back to the beginning when the end is reached.
     /// </summary>
     /// <param name="init">
-    /// If <c>true</c>, this is being called at the start of <see cref="PerformAI(Action{bool})"/>, 
-    /// and the current <see cref="selectedBehaviour"/> will be initialized if not already set.
+    /// If <c>true</c>, this is being called at the start of <see cref="PerformAi"/>, 
+    /// and the current <see cref="_selectedBehaviour"/> will be initialized if not already set.
     /// If <c>false</c>, the next behaviour in sequence will be selected.
     /// </param>
     private void InOrderSelector(bool init)
     {
-        if (init) { selectedBehaviour ??= behaviourList[selectedBehaviourIndex]; }
+        if (init) { _selectedBehaviour ??= _behaviourList[_selectedBehaviourIndex]; }
         else
         {
-            selectedBehaviourIndex = (selectedBehaviourIndex + 1) % behaviourList.Count;
-            SelectNewBehaviour(selectedBehaviourIndex);
+            _selectedBehaviourIndex = (_selectedBehaviourIndex + 1) % _behaviourList.Count;
+            SelectNewBehaviour(_selectedBehaviourIndex);
         }
     }
 
     /// <summary>
-    /// Selects a new behaviour from <see cref="behaviourList"/> based on the 
+    /// Selects a new behaviour from <see cref="_behaviourList"/> based on the 
     /// <see cref="BehaviourInfo.ExitStatus"/> returned by the previously executed behaviour.
     /// </summary>
     /// <param name="init">
-    /// If <c>true</c>, this is being called at the start of <see cref="PerformAI(Action{bool})"/>, 
-    /// and the current <see cref="selectedBehaviour"/> will be initialized if not already set.
+    /// If <c>true</c>, this is being called at the start of <see cref="PerformAi"/>, 
+    /// and the current <see cref="_selectedBehaviour"/> will be initialized if not already set.
     /// If <c>false</c>, a new behaviour will be selected using the last exit status.
     /// </param>
     private void ExitStatusSelector(bool init)
     {
-        if (init) { selectedBehaviour ??= behaviourList[selectedBehaviourIndex]; }
+        if (init) { _selectedBehaviour ??= _behaviourList[_selectedBehaviourIndex]; }
         else
         {
-            SelectNewBehaviour(behaviourInfo.ExitStatus);
+            SelectNewBehaviour(_behaviourInfo.ExitStatus);
         }
     }
 
     /// <summary>
     /// Core AI update loop. 
     /// <para>
-    /// Executes all <see cref="backgroundBehaviourList"/> behaviours every tick, then performs the 
-    /// <see cref="selectedBehaviour"/>. If the selected behaviour has finished, this method either 
-    /// runs <see cref="idleBehaviour"/> (if there is time remaining between behaviours) or selects a new behaviour 
+    /// Executes all <see cref="_backgroundBehaviourList"/> behaviours every tick, then performs the 
+    /// <see cref="_selectedBehaviour"/>. If the selected behaviour has finished, this method either 
+    /// runs <see cref="_idleBehaviour"/> (if there is time remaining between behaviours) or selects a new behaviour 
     /// using the provided <paramref name="selector"/>.
     /// </para>
     /// </summary>
@@ -255,22 +255,22 @@ public class ProjectileBehaviourManager(OmoriBehaviourProjectile projectile, int
     /// <item><description>Once after the current behaviour completes (with <c>false</c>) to select the next behaviour.</description></item>
     /// </list>
     /// </param>
-    private void PerformAI(Action<bool> selector)
+    private void PerformAi(Action<bool> selector)
     {
         selector?.Invoke(true);
 
-        foreach (var backgroundBehaviour in backgroundBehaviourList)
+        foreach (var backgroundBehaviour in _backgroundBehaviourList)
         {
-            PerformBehaviour(backgroundBehaviour, behaviourInfo);
+            PerformBehaviour(backgroundBehaviour, _behaviourInfo);
         }
-        if (PerformBehaviour(selectedBehaviour, behaviourInfo))
+        if (PerformBehaviour(_selectedBehaviour, _behaviourInfo))
         {
-            if (timeBetweenBehaviours.TotalTicks > 0 && !selectedBehaviour.JustCompleted)
+            if (_timeBetweenBehaviours.TotalTicks > 0 && !_selectedBehaviour.JustCompleted)
             {
-                timeBetweenBehaviours--;
-                PerformBehaviour(idleBehaviour, behaviourInfo);
+                _timeBetweenBehaviours--;
+                PerformBehaviour(_idleBehaviour, _behaviourInfo);
             }
-            else if (timeBetweenBehaviours.TotalTicks <= 0)
+            else if (_timeBetweenBehaviours.TotalTicks <= 0)
             {
                 selector?.Invoke(false);
             }
@@ -280,76 +280,76 @@ public class ProjectileBehaviourManager(OmoriBehaviourProjectile projectile, int
     /// <summary>
     /// Starts the behaviour manager, selecting behaviours at random.
     /// <para>
-    /// This method randomly selects behaviours from <see cref="behaviourList"/> to run.
+    /// This method randomly selects behaviours from <see cref="_behaviourList"/> to run.
     /// </para>
     /// <para>
-    /// All <see cref="ProjectileBackgroundBehaviour"/> in <see cref="backgroundBehaviourList"/> 
+    /// All <see cref="ProjectileBackgroundBehaviour"/> in <see cref="_backgroundBehaviourList"/> 
     /// will run every tick, regardless of what other behaviour is active.
     /// </para>
     /// <para>
-    /// The currently <see cref="selectedBehaviour"/> will run every tick 
-    /// once <see cref="timeBetweenBehaviours"/> has finished counting down.
+    /// The currently <see cref="_selectedBehaviour"/> will run every tick 
+    /// once <see cref="_timeBetweenBehaviours"/> has finished counting down.
     /// </para>
     /// <para>
-    /// When <see cref="timeBetweenBehaviours"/> is still counting down, 
-    /// the <see cref="idleBehaviour"/> will run instead.
+    /// When <see cref="_timeBetweenBehaviours"/> is still counting down, 
+    /// the <see cref="_idleBehaviour"/> will run instead.
     /// </para>
     /// </summary>
-    public void PerformAIViaRandomBehaviour()
+    public void PerformAiViaRandomBehaviour()
     {
-        PerformAI(RandomSelector);
+        PerformAi(RandomSelector);
     }
 
     /// <summary>
     /// Starts the behaviour manager, selecting behaviours in order.
     /// <para>
-    /// This method selects behaviours from <see cref="behaviourList"/> in order to run.
+    /// This method selects behaviours from <see cref="_behaviourList"/> in order to run.
     /// </para>
     /// <para>
-    /// All <see cref="ProjectileBackgroundBehaviour"/> in <see cref="backgroundBehaviourList"/> 
+    /// All <see cref="ProjectileBackgroundBehaviour"/> in <see cref="_backgroundBehaviourList"/> 
     /// will run every tick, regardless of what other behaviour is active.
     /// </para>
     /// <para>
-    /// The currently <see cref="selectedBehaviour"/> will run every tick 
-    /// once <see cref="timeBetweenBehaviours"/> has finished counting down.
+    /// The currently <see cref="_selectedBehaviour"/> will run every tick 
+    /// once <see cref="_timeBetweenBehaviours"/> has finished counting down.
     /// </para>
     /// <para>
-    /// When <see cref="timeBetweenBehaviours"/> is still counting down, 
-    /// the <see cref="idleBehaviour"/> will run instead.
+    /// When <see cref="_timeBetweenBehaviours"/> is still counting down, 
+    /// the <see cref="_idleBehaviour"/> will run instead.
     /// </para>
     /// </summary>
-    public void PerformAIViaInOrderBehaviour()
+    public void PerformAiViaInOrderBehaviour()
     {
-        PerformAI(InOrderSelector);
+        PerformAi(InOrderSelector);
     }
 
     /// <summary>
     /// Starts the behaviour manager, selecting behaviours based on exit status.
     /// <para>
-    /// This method selects behaviours from <see cref="behaviourList"/>
+    /// This method selects behaviours from <see cref="_behaviourList"/>
     /// based on the previous <see cref="SelectedBehaviour"/> exit status to run.
     /// </para>
     /// <para>
-    /// All <see cref="ProjectileBackgroundBehaviour"/> in <see cref="backgroundBehaviourList"/> 
+    /// All <see cref="ProjectileBackgroundBehaviour"/> in <see cref="_backgroundBehaviourList"/> 
     /// will run every tick, regardless of what other behaviour is active.
     /// </para>
     /// <para>
-    /// The currently <see cref="selectedBehaviour"/> will run every tick 
-    /// once <see cref="timeBetweenBehaviours"/> has finished counting down.
+    /// The currently <see cref="_selectedBehaviour"/> will run every tick 
+    /// once <see cref="_timeBetweenBehaviours"/> has finished counting down.
     /// </para>
     /// <para>
-    /// When <see cref="timeBetweenBehaviours"/> is still counting down, 
-    /// the <see cref="idleBehaviour"/> will run instead.
+    /// When <see cref="_timeBetweenBehaviours"/> is still counting down, 
+    /// the <see cref="_idleBehaviour"/> will run instead.
     /// </para>
     /// </summary>
-    public void PerformAIViaExitStatus()
+    public void PerformAiViaExitStatus()
     {
-        PerformAI(ExitStatusSelector);
+        PerformAi(ExitStatusSelector);
     }
 
     /// <summary>
     /// Determines which animation frame should be rendered for the currently 
-    /// <see cref="selectedBehaviour"/>.
+    /// <see cref="_selectedBehaviour"/>.
     /// <para>
     /// This method delegates frame selection to the active behaviour's 
     /// <see cref="ProjectileBehaviour.FindFrame(OmoriBehaviourProjectile, BehaviourInfo, int)"/> implementation, allowing each behaviour to control 
@@ -362,6 +362,6 @@ public class ProjectileBehaviourManager(OmoriBehaviourProjectile projectile, int
     /// </param>
     public void PerformFindFrame(int frameHeight)
     {
-        selectedBehaviour.PerformFindFrame(projectile, behaviourInfo, frameHeight);
+        _selectedBehaviour.PerformFindFrame(_projectile, _behaviourInfo, frameHeight);
     }
 }

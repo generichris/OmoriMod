@@ -1,8 +1,8 @@
-using OmoriMod.Systems.AbilitySystem.ItemAbilities.AbilityContexts;
+using OmoriMod.Content.Systems.AbilitySystem.ItemAbilities.AbilityContexts;
 
 using Terraria;
 
-namespace OmoriMod.Systems.AbilitySystem.ItemAbilities;
+namespace OmoriMod.Content.Systems.AbilitySystem.ItemAbilities;
 
 public interface IItemAbility
 {

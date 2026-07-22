@@ -1,8 +1,8 @@
-﻿namespace OmoriMod.Util;
+﻿namespace OmoriMod.Content.Util;
 
 public static class OmoriModStringExtensions
 {
-    private static readonly string _string = OmoriMod.MOD_NAME;
+    private static readonly string String = OmoriMod.MOD_NAME;
 
     /// <summary>
     /// Creates a string that has <see cref="OmoriMod.MOD_NAME"/> attached to the front.
@@ -12,6 +12,6 @@ public static class OmoriModStringExtensions
     /// <returns></returns>
     public static string OmoriModString(this string str)
     {
-        return _string + ":" + str;
+        return String + ":" + str;
     }
 }

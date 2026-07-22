@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 using OmoriMod.Content.Items.Abstract_Classes;
+using OmoriMod.Content.Items.Abstract_Classes.BaseClasses;
 using OmoriMod.Content.Players;
 
 using ReLogic.Content;
@@ -11,7 +12,7 @@ using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader;
 using Terraria.UI;
 
-namespace OmoriMod.Systems.ChargeBar;
+namespace OmoriMod.Content.Systems.ChargeBar;
 
 public class ChargeBarUI : UIState
 {

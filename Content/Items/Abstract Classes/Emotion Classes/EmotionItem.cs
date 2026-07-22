@@ -1,25 +1,32 @@
 using OmoriMod.Content.Items.Abstract_Classes.BaseClasses;
-using OmoriMod.Systems.EmotionSystem;
+using OmoriMod.Content.Players;
+using OmoriMod.Content.Systems.EmotionSystem;
+using OmoriMod.Content.Systems.EmotionSystem.Interfaces;
 
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace OmoriMod.Content.Items.Abstract_Classes;
+namespace OmoriMod.Content.Items.Abstract_Classes.Emotion_Classes;
 
 /// <summary>
-/// An abstract class for items that inflict emotions.
-/// Use <see cref="AngryItem"/>, <see cref="HappyItem"/>, or <see cref="SadItem"/> 
-/// to set emotions. If <see cref="Emotion"/> is not set, it will default to <see cref="EmotionType.NONE"/>.
+/// Base class for emotion-aware items that apply an emotion to NPCs on hit and participate
+/// in emotional-advantage calculations during player-versus-player hits.
 /// </summary>
+/// <remarks>
+/// Derive from <see cref="AngryItem"/>, <see cref="HappyItem"/>, or <see cref="SadItem"/>
+/// when the item's emotion is fixed. Direct subclasses default to <see cref="EmotionType.None"/>.
+/// </remarks>
 public abstract class EmotionItem : AbilityItem, IOnHitEmotionObject
 {
+    /// <summary>Gets the emotion applied or represented by this item.</summary>
     public EmotionType Emotion { get; protected set; }
 
-    public float meleeWeaponProjectileMoveTime = 0.2f;
+    /// <summary>The travel-time value used by melee weapons that create emotion projectiles.</summary>
+    public float MeleeWeaponProjectileMoveTime = 0.2f;
 
     /// <summary>
-    /// Used to set the <see cref="Emotion"/>
+    /// Sets the emotion represented by this item.
     /// </summary>
     /// <param name="emotion">The emotion to be set.</param>
     protected void SetEmotionType(EmotionType emotion)
@@ -28,7 +35,7 @@ public abstract class EmotionItem : AbilityItem, IOnHitEmotionObject
     }
 
     /// <summary>
-    /// A hook method that allows emotion items to call <see cref="OnHitNPC(Player, NPC, NPC.HitInfo, int)"/> without breaking the emotion system.
+    /// Provides an extension hook that runs after the base class applies its emotion to an NPC.
     /// </summary>
     /// <param name="player">The player.</param>
     /// <param name="target">The target.</param>
@@ -38,34 +45,42 @@ public abstract class EmotionItem : AbilityItem, IOnHitEmotionObject
 
     public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
     {
-        ((IOnHitEmotionObject)this).InflictEmotion(target);
+        EmotionSystem.ApplyEmotion(target, Emotion);
         OnHitNPCEmotion(player, target, hit, damageDone);
+    }
+
+    public override void ModifyHitPvp(Player player, Player target, ref Player.HurtModifiers modifiers)
+    {
+        EmotionSystem.ApplyCombatModifiers(
+            player.GetModPlayer<EmotionPlayer>(),
+            target.GetModPlayer<EmotionPlayer>(),
+            ref modifiers);
     }
 
     protected override void SetRarity()
     {
         switch (Emotion)
         {
-            case EmotionType.NONE:
-                break;
-            case EmotionType.SAD:
+            case EmotionType.Sad:
                 Item.rare = ItemRarityID.Blue;
                 break;
-            case EmotionType.ANGRY:
+            case EmotionType.Angry:
                 Item.rare = ItemRarityID.Red;
                 break;
-            case EmotionType.HAPPY:
+            case EmotionType.Happy:
                 Item.rare = ItemRarityID.Yellow;
                 break;
-            case EmotionType.FEAR:
+            case EmotionType.Fear:
                 Item.rare = ItemRarityID.Purple;
+                break;
+            case EmotionType.None:
+            default:
                 break;
         }
     }
 
     /// <summary>
-    /// Clones the defaults of a <see cref="ModItem"/> inlcuding the research unlock count. 
-    /// Preserves <see cref="Item.rare"/> and <see cref="Emotion"/>
+    /// Clones another mod item's defaults and research count, then restores emotion-based rarity.
     /// </summary>
     /// <typeparam name="T">The <see cref="Item"/> to be cloned.</typeparam>
     public void EmotionItemClone<T>() where T : ModItem
@@ -75,12 +90,11 @@ public abstract class EmotionItem : AbilityItem, IOnHitEmotionObject
     }
 
     /// <summary>
-    /// Clones the defaults of a <see cref="ModItem"/> inlcuding the research unlock count. 
-    /// Preserves <see cref="Item.rare"/> and <see cref="Emotion"/>. Changes projectile shot to
-    /// the type of <paramref name="projType"/>
+    /// Clones another mod item's defaults and research count, replaces its projectile,
+    /// then restores emotion-based rarity.
     /// </summary>
     /// <typeparam name="T">The <see cref="ModItem"/> to be cloned.</typeparam>
-    /// <param name="projType">The type of the <see cref="Projectile"/> shot.</param>
+    /// <param name="newProjectileType">The type of the <see cref="Projectile"/> shot.</param>
     public void EmotionItemCloneWithDifferentProjectile<T>(int newProjectileType) where T : ModItem
     {
         ModItemClone<T>();
@@ -89,12 +103,11 @@ public abstract class EmotionItem : AbilityItem, IOnHitEmotionObject
     }
 
     /// <summary>
-    /// Clones the defaults of a <see cref="ModItem"/> inlcuding the research unlock count. 
-    /// Preserves <see cref="Item.rare"/> and <see cref="Emotion"/>. Changes buff applied to
-    /// tge type of <paramref name="newBuffType"/>
+    /// Clones another mod item's defaults and research count, replaces its applied buff,
+    /// then restores emotion-based rarity.
     /// </summary>
     /// <typeparam name="T">The <see cref="ModItem"/> to be cloned.</typeparam>
-    /// <param name="projType">The type of the <see cref="Projectile"/> shot.</param>
+    /// <param name="newBuffType">The type of the <see cref="ModBuff"/> provided.</param>
     public void EmotionItemCloneWithDifferentBuff<T>(int newBuffType) where T : ModItem
     {
         ModItemClone<T>();

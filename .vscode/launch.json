@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch tModLoader",
+      "name": "Launch tModLoader — Microsoft C#",
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build mod",
@@ -11,6 +11,16 @@
       "cwd": "${env:TMLSTEAMPATH}",
       "console": "integratedTerminal",
       "stopAtEntry": false
+    },
+    {
+      "name": "Launch tModLoader — ReSharper",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build mod",
+      "program": "${env:TMLSTEAMPATH}\\tModLoader.dll",
+      "runtimeExecutable": "${env:TMLSTEAMPATH}\\dotnet\\dotnet.exe",
+      "args": [],
+      "cwd": "${env:TMLSTEAMPATH}"
     }
   ]
 }

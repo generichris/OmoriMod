@@ -1,14 +1,14 @@
-﻿using OmoriMod.Systems.EmotionSystem;
+using OmoriMod.Content.Systems.EmotionSystem;
 
-namespace OmoriMod.Content.Items.Abstract_Classes;
+namespace OmoriMod.Content.Items.Abstract_Classes.Emotion_Classes;
 
 /// <summary>
-/// Automatically sets <see cref="EmotionItem.Emotion"/> to <see cref="EmotionType.SAD"/>.
+/// Automatically sets <see cref="EmotionItem.Emotion"/> to <see cref="EmotionType.Sad"/>.
 /// </summary>
 public abstract class SadItem : EmotionItem
 {
-    public SadItem()
+    protected SadItem()
     {
-        SetEmotionType(EmotionType.SAD);
+        SetEmotionType(EmotionType.Sad);
     }
 }

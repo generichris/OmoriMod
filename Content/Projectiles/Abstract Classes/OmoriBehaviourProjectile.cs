@@ -1,4 +1,4 @@
-﻿using OmoriMod.Systems.State_Management.Projectiles;
+﻿using OmoriMod.Content.Systems.State_Management.Projectiles;
 
 namespace OmoriMod.Content.Projectiles.Abstract_Classes;
 

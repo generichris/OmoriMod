@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 
-namespace OmoriMod.Systems.AbilitySystem.ItemAbilities.AbilityContexts;
+namespace OmoriMod.Content.Systems.AbilitySystem.ItemAbilities.AbilityContexts;
 
 public class PassiveAbilityShootContext(
     Player player,

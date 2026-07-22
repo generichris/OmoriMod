@@ -3,8 +3,8 @@ using System.IO;
 
 using Microsoft.Xna.Framework;
 
-using OmoriMod.Systems.AbilitySystem.ItemAbilities.AbilityContexts;
-using OmoriMod.Systems.AbilitySystem.ItemAbilities.Registries;
+using OmoriMod.Content.Systems.AbilitySystem.ItemAbilities.AbilityContexts;
+using OmoriMod.Content.Systems.AbilitySystem.ItemAbilities.Registries;
 
 using Terraria;
 using Terraria.DataStructures;
@@ -15,11 +15,11 @@ namespace OmoriMod.Content.Items.Abstract_Classes.BaseClasses;
 
 public abstract class AbilityItem : OmoriModItem
 {
-    public int CurrentPassiveAbilityID = (int)PassiveAbilityRegistry.PassiveAbilityID.NONE;
-    public int InnatePassiveAbilityID = (int)PassiveAbilityRegistry.PassiveAbilityID.NONE;
+    public int CurrentPassiveAbilityID = (int)PassiveAbilityRegistry.PassiveAbilityID.None;
+    public int InnatePassiveAbilityID = (int)PassiveAbilityRegistry.PassiveAbilityID.None;
 
-    public int CurrentActiveAbilityID = (int)ActiveAbilityRegistry.ActiveAbilityID.NONE;
-    public int InnateActiveAbilityID = (int)ActiveAbilityRegistry.ActiveAbilityID.NONE;
+    public int CurrentActiveAbilityID = (int)ActiveAbilityRegistry.ActiveAbilityID.None;
+    public int InnateActiveAbilityID = (int)ActiveAbilityRegistry.ActiveAbilityID.None;
 
     public override void SaveData(TagCompound tag)
     {
@@ -110,23 +110,23 @@ public abstract class AbilityItem : OmoriModItem
         return base.UseItem(player);
     }
     // Use this property to get the actual ability to perform. 
-    public int EffectivePassiveAbilityID => CurrentPassiveAbilityID != (int)PassiveAbilityRegistry.PassiveAbilityID.NONE ? CurrentPassiveAbilityID : InnatePassiveAbilityID;
-    public int EffectiveActiveAbilityID => CurrentActiveAbilityID != (int)ActiveAbilityRegistry.ActiveAbilityID.NONE ? CurrentActiveAbilityID : InnateActiveAbilityID;
+    public int EffectivePassiveAbilityID => CurrentPassiveAbilityID != (int)PassiveAbilityRegistry.PassiveAbilityID.None ? CurrentPassiveAbilityID : InnatePassiveAbilityID;
+    public int EffectiveActiveAbilityID => CurrentActiveAbilityID != (int)ActiveAbilityRegistry.ActiveAbilityID.None ? CurrentActiveAbilityID : InnateActiveAbilityID;
 
     public virtual bool CanUsePassiveAbility()
     {
-        return EffectivePassiveAbilityID != (int)PassiveAbilityRegistry.PassiveAbilityID.NONE;
+        return EffectivePassiveAbilityID != (int)PassiveAbilityRegistry.PassiveAbilityID.None;
     }
 
     public virtual bool CanUseActiveAbility()
     {
-        return EffectiveActiveAbilityID != (int)ActiveAbilityRegistry.ActiveAbilityID.NONE;
+        return EffectiveActiveAbilityID != (int)ActiveAbilityRegistry.ActiveAbilityID.None;
     }
 
     public override void ModifyTooltips(List<TooltipLine> tooltips)
     {
         base.ModifyTooltips(tooltips);
-        if (EffectivePassiveAbilityID != (int)PassiveAbilityRegistry.PassiveAbilityID.NONE)
+        if (EffectivePassiveAbilityID != (int)PassiveAbilityRegistry.PassiveAbilityID.None)
         {
             // Optionally add tooltip about current ability
             // tooltips.Add(new TooltipLine(Mod, "Ability", $"Ability: {EffectivePassiveAbilityID}"));

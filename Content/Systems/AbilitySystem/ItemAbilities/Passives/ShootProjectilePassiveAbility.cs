@@ -2,12 +2,12 @@ using System;
 
 using Microsoft.Xna.Framework;
 
-using OmoriMod.Systems.AbilitySystem.ItemAbilities.AbilityContexts;
+using OmoriMod.Content.Systems.AbilitySystem.ItemAbilities.AbilityContexts;
 
 using Terraria;
 using Terraria.ModLoader;
 
-namespace OmoriMod.Systems.AbilitySystem.ItemAbilities.Passives;
+namespace OmoriMod.Content.Systems.AbilitySystem.ItemAbilities.Passives;
 
 public class ShootProjectilePassiveAbility : IItemPassiveAbility
 {

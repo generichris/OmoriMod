@@ -69,8 +69,7 @@ public static class ModNPCExtensions
     {
         if (npc.NPC.HasValidTarget)
         {
-            if (float.IsNaN(npc.NPC.velocity.X)) { return 0; }
-            return Math.Sign(Main.player[npc.NPC.target].Center.X - npc.NPC.Center.X);
+            return float.IsNaN(npc.NPC.velocity.X) ? 0 : Math.Sign(Main.player[npc.NPC.target].Center.X - npc.NPC.Center.X);
         }
         return 0;
     }

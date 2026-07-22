@@ -1,5 +1,6 @@
 ﻿using OmoriMod.Content.Items.Abstract_Classes;
 using OmoriMod.Content.Items.Abstract_Classes.BaseClasses;
+using OmoriMod.Content.Items.Abstract_Classes.Emotion_Classes;
 using OmoriMod.Content.Items.Weapons.Magic.Tier2;
 using OmoriMod.Content.Projectiles.Friendly.Magic.Tier3;
 

@@ -4,12 +4,13 @@ using System.IO;
 using Microsoft.Xna.Framework;
 
 using OmoriMod.Content.Dusts;
+using OmoriMod.Content.Items.Abstract_Classes.Emotion_Classes;
 using OmoriMod.Content.Players;
 
 using Terraria;
 using Terraria.ModLoader;
 
-namespace OmoriMod.Content.Items.Abstract_Classes;
+namespace OmoriMod.Content.Items.Abstract_Classes.BaseClasses;
 
 
 public enum FocusState

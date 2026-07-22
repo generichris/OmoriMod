@@ -2,43 +2,38 @@
 
 using Terraria;
 
-namespace OmoriMod.Content.Items.Abstract_Classes;
+namespace OmoriMod.Content.Items.Abstract_Classes.Emotion_Classes;
 
 /// <summary>
-/// Parent class for any item that grants an <see cref="EmotionBuff"/>
+/// Base class for items that grant or promote <see cref="EmotionBuff"/> instances and need
+/// a short use cooldown independent of the item's normal use animation.
 /// </summary>
 public abstract class EmotionBuffItem : EmotionItem
 {
     /// <summary>
-    /// The amount of ticks needed between <see cref="EmotionBuff"/> applications.
+    /// The minimum number of ticks between emotion-buff application attempts.
     /// </summary>
-    protected int cooldownTicks;
+    protected int _cooldownTicks = 10;
 
     /// <summary>
-    /// The timer to keep track of the amount of ticks since the last <see cref="EmotionBuff"/> application.
+    /// The remaining internal cooldown in ticks.
     /// </summary>
-    private int timer;
-
-    public EmotionBuffItem()
-    {
-        cooldownTicks = 10;
-        timer = 0;
-    }
+    private int _timer;
 
     /// <summary>
-    /// Use this instead of <see cref="UpdateInventory(Player)"/>
+    /// Provides an extension hook for inventory updates without bypassing cooldown handling.
     /// </summary>
     /// <param name="player">The <see cref="Player"/></param>
     public virtual void UpdateInventoryEmotionBuffItem(Player player) { }
 
     /// <summary>
-    /// Use this instead of <see cref="UseItem(Player)(Player)"/>
+    /// Provides an extension hook for item use after the cooldown has been started.
     /// </summary>
     /// <param name="player">The <see cref="Player"/></param>
     public virtual bool? UseItemEmotionBuffItem(Player player) { return null; }
 
     /// <summary>
-    /// Use this instead of <see cref="CanUseItem(Player)(Player)"/>
+    /// Provides an extension hook for item-specific eligibility in addition to the cooldown check.
     /// </summary>
     /// <param name="player">The <see cref="Player"/></param>
     public virtual bool CanUseItemEmotionBuffItem(Player player) { return true; }
@@ -47,20 +42,19 @@ public abstract class EmotionBuffItem : EmotionItem
 
     public override void UpdateInventory(Player player)
     {
-        if (timer > 0) { timer--; }
+        if (_timer > 0) { _timer--; }
         UpdateInventoryEmotionBuffItem(player);
     }
 
     public override bool? UseItem(Player player)
     {
-        timer = cooldownTicks;
+        _timer = _cooldownTicks;
         return UseItemEmotionBuffItem(player);
     }
 
     public override bool CanUseItem(Player player)
     {
-        bool timerBool = false;
-        if (timer == 0) timerBool = true;
+        bool timerBool = _timer == 0;
         return timerBool && CanUseItemEmotionBuffItem(player);
     }
 }

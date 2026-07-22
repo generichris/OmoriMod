@@ -1,4 +1,4 @@
-﻿namespace OmoriMod.Systems.AbilitySystem.ItemAbilities;
+﻿namespace OmoriMod.Content.Systems.AbilitySystem.ItemAbilities;
 
 public interface IItemPassiveAbility : IItemAbility
 {

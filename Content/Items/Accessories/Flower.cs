@@ -1,7 +1,8 @@
 using OmoriMod.Content.Buffs.HappyBuff;
 using OmoriMod.Content.Items.Abstract_Classes;
 using OmoriMod.Content.Items.Abstract_Classes.BaseClasses;
-using OmoriMod.Systems.EmotionSystem;
+using OmoriMod.Content.Items.Abstract_Classes.Emotion_Classes;
+using OmoriMod.Content.Systems.EmotionSystem;
 
 using Terraria;
 using Terraria.ModLoader;

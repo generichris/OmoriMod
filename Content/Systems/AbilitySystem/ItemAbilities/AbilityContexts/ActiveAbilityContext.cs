@@ -1,6 +1,6 @@
 using Terraria;
 
-namespace OmoriMod.Systems.AbilitySystem.ItemAbilities.AbilityContexts;
+namespace OmoriMod.Content.Systems.AbilitySystem.ItemAbilities.AbilityContexts;
 
 public class ActiveAbilityContext(Player player, Item item) : AbilityContext(player, item)
 {

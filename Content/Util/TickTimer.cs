@@ -1,10 +1,10 @@
 using System;
 
-using OmoriMod.Util.Interfaces;
+using OmoriMod.Content.Util.Interfaces;
 
 using Terraria.ModLoader.IO;
 
-namespace OmoriMod.Util;
+namespace OmoriMod.Content.Util;
 
 /// <summary>
 /// A utility class that helps with timing. Can run for a really long time.
@@ -14,12 +14,12 @@ public class TickTimer : ISaveableWithGenerate
     /// <summary>
     /// <see cref="string"/> for saving purposes.
     /// </summary>
-    private static readonly string saveTotalTicks = "TickTimer:totalTicks:";
+    private const string SaveTotalTicks = "TickTimer:totalTicks:";
 
     /// <summary>
     /// <see cref="string"/> for saving purposes.
     /// </summary>
-    private static readonly string saveOriginalTicks = "TickTimer:originalTicks:";
+    private const string SaveOriginalTicks = "TickTimer:originalTicks:";
 
     /// <summary>
     /// How many total ticks there are left in this <see cref="TickTimer"/>
@@ -56,7 +56,7 @@ public class TickTimer : ISaveableWithGenerate
     public long TotalTicks => _totalTicks;
 
     /// <summary>
-    /// Returns <paramref name="true"/> if this <see cref="TickTimer"/> is out of ticks. Only useful for <see cref="TickTimer"/> instances that decrement
+    /// Returns <c>True</c> if this <see cref="TickTimer"/> is out of ticks. Only useful for <see cref="TickTimer"/> instances that decrement
     /// </summary>
     public bool IsDone => _totalTicks <= 0;
 
@@ -161,7 +161,7 @@ public class TickTimer : ISaveableWithGenerate
     /// <param name="fallbackTimer">A backup <see cref="TickTimer"/> if this instance is not found in the <paramref name="tag"/>.</param>
     public TickTimer(TagCompound tag, string identifier, TickTimer fallbackTimer)
     {
-        if (tag.ContainsKey(identifier.OmoriModString() + saveTotalTicks))
+        if (tag.ContainsKey(identifier.OmoriModString() + SaveTotalTicks))
         {
             LoadData(tag, identifier);
         }
@@ -216,8 +216,8 @@ public class TickTimer : ISaveableWithGenerate
     {
         TagCompound tag = new()
         {
-            [identifier.OmoriModString() + saveTotalTicks] = _totalTicks,
-            [identifier.OmoriModString() + saveOriginalTicks] = _originalTicks
+            [identifier.OmoriModString() + SaveTotalTicks] = _totalTicks,
+            [identifier.OmoriModString() + SaveOriginalTicks] = _originalTicks
         };
         return tag;
     }
@@ -229,8 +229,8 @@ public class TickTimer : ISaveableWithGenerate
     /// <param name="identifier">The <see cref="string"/> name of this <see cref="TickTimer"/>.</param>
     public void SaveData(TagCompound tag, string identifier)
     {
-        tag[identifier.OmoriModString() + saveTotalTicks] = _totalTicks;
-        tag[identifier.OmoriModString() + saveOriginalTicks] = _originalTicks;
+        tag[identifier.OmoriModString() + SaveTotalTicks] = _totalTicks;
+        tag[identifier.OmoriModString() + SaveOriginalTicks] = _originalTicks;
     }
 
     /// <summary>
@@ -240,15 +240,13 @@ public class TickTimer : ISaveableWithGenerate
     /// <param name="identifier">The <see cref="string"/> name of this <see cref="TickTimer"/>.</param>
     public void LoadData(TagCompound tag, string identifier)
     {
-        _totalTicks = tag.GetLong(identifier.OmoriModString() + saveTotalTicks);
-        _originalTicks = tag.GetLong(identifier.OmoriModString() + saveOriginalTicks);
+        _totalTicks = tag.GetLong(identifier.OmoriModString() + SaveTotalTicks);
+        _originalTicks = tag.GetLong(identifier.OmoriModString() + SaveOriginalTicks);
     }
 
     public override bool Equals(object obj)
     {
-        if (obj is TickTimer other)
-            return _totalTicks == other._totalTicks;
-        return false;
+        return obj is TickTimer other && _totalTicks == other._totalTicks;
     }
 
     public override int GetHashCode()

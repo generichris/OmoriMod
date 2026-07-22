@@ -3,14 +3,14 @@ using Microsoft.Xna.Framework.Graphics;
 
 using OmoriMod.Content.Items.Abstract_Classes.BaseClasses;
 using OmoriMod.Content.Players;
-using OmoriMod.Systems.AbilitySystem.ItemAbilities.Registries;
+using OmoriMod.Content.Systems.AbilitySystem.ItemAbilities.Registries;
 
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader;
 using Terraria.UI;
 
-namespace OmoriMod.Systems.AbilitySystem.AbilityMenuUI;
+namespace OmoriMod.Content.Systems.AbilitySystem.AbilityMenuUI;
 
 public class AbilityMenu : UIState
 {

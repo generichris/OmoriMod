@@ -2,7 +2,7 @@
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace OmoriMod.Systems.Config;
+namespace OmoriMod.Content.Systems.Config;
 
 public class Dev : ModSystem
 {

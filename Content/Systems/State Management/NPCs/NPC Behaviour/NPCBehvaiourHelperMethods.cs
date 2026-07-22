@@ -1,11 +1,11 @@
 using System;
 
 using OmoriMod.Content.NPCs.Classes;
-using OmoriMod.Systems.State_Management.Behaviour_Info;
+using OmoriMod.Content.Systems.State_Management.Behaviour_Info;
 
 using Terraria;
 
-namespace OmoriMod.Systems.State_Management.NPCs.NPC_Behaviour;
+namespace OmoriMod.Content.Systems.State_Management.NPCs.NPC_Behaviour;
 
 public static class NPCBehvaiourHelperMethods
 {

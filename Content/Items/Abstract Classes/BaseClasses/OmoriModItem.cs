@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
 
+using OmoriMod.Content.Items.Abstract_Classes.Emotion_Classes;
+
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

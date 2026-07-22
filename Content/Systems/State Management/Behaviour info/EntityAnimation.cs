@@ -1,5 +1,5 @@
 ﻿
-namespace OmoriMod.Systems.State_Management.Behaviour_Info;
+namespace OmoriMod.Content.Systems.State_Management.Behaviour_Info;
 
 public class EntityAnimation
 {

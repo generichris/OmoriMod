@@ -1,10 +1,8 @@
-﻿using OmoriMod.Systems.State_Management.Behaviour_Info;
+﻿using OmoriMod.Content.Systems.State_Management.Behaviour_Info;
 
-namespace OmoriMod.Systems.State_Management.Projectiles.Projectile_Behaviour;
+namespace OmoriMod.Content.Systems.State_Management.Projectiles.Projectile_Behaviour;
 
 /// <summary>
 /// Creates a background behaviour. Do NOT change any <see cref="BehaviourInfo"/> in any instances of this class
 /// </summary>
-public abstract class ProjectileBackgroundBehaviour() : ProjectileBehaviour(1)
-{
-}
+public abstract class ProjectileBackgroundBehaviour() : ProjectileBehaviour(1);

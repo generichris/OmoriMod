@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 
 using OmoriMod.Content.Projectiles.Abstract_Classes;
-using OmoriMod.Systems.State_Management.Behaviour_Info;
-using OmoriMod.Util;
+using OmoriMod.Content.Systems.State_Management.Behaviour_Info;
+using OmoriMod.Content.Util;
 
-namespace OmoriMod.Systems.State_Management.Projectiles.Projectile_Behaviour;
+namespace OmoriMod.Content.Systems.State_Management.Projectiles.Projectile_Behaviour;
 
 /// <summary>
 /// Helper class that can store behaviours for NPCs for state management
@@ -13,7 +13,7 @@ namespace OmoriMod.Systems.State_Management.Projectiles.Projectile_Behaviour;
 public abstract class ProjectileBehaviour
 {
 
-    protected List<float> behaviourParameters;
+    protected List<float> _behaviourParameters;
 
     public bool IsDone { get => !_inProgress && _hasStarted; }
     private bool _inProgress;
@@ -23,8 +23,8 @@ public abstract class ProjectileBehaviour
     public bool JustCompleted { get => _justCompleted; }
     private bool _justCompleted;
 
-    public string BehaviourName { get => behaviourName; }
-    private string behaviourName;
+    public string BehaviourName { get => _behaviourName; }
+    private string _behaviourName;
 
     protected int _defaultExitStatus;
 
@@ -34,7 +34,7 @@ public abstract class ProjectileBehaviour
     /// A good example of this is <see cref="ChasePlayerExitOnTimeOut"/> which needs to retain its timer after it switches 
     /// into the <see cref="ChasePlayerJump"/> behaviour
     /// </summary>
-    protected ProjectileBehaviour subBehaviour;
+    protected ProjectileBehaviour _subBehaviour;
     private BehaviourInfo _behaviourSnapshot;
 
     private bool _runSubBehaviour;
@@ -43,29 +43,30 @@ public abstract class ProjectileBehaviour
 
     private void Init(string name, int defaultExitStatus)
     {
-        behaviourParameters = [];
+        _behaviourParameters = [];
         _inProgress = false;
         _hasStarted = false;
         _justCompleted = false;
         _runSubBehaviour = false;
-        behaviourName = name.OmoriModString();
+        _behaviourName = name.OmoriModString();
         _defaultExitStatus = defaultExitStatus;
     }
 
     /// <summary>
     /// Creates a <see cref="NPCBehaviour"/> with no name. NOTE: No name != (name = null)
     /// </summary>
-    public ProjectileBehaviour(int defaultExitStatus)
+    protected ProjectileBehaviour(int defaultExitStatus)
     {
-        string name = (behaviourName ?? GetType().Name).OmoriModString();
+        string name = (GetType().Name).OmoriModString();
         Init(name, defaultExitStatus);
     }
 
     /// <summary>
     /// Creates a <see cref="NPCBehaviour"/>.
     /// </summary>
+    /// <param name="defaultExitStatus"></param>
     /// <param name="behaviourName">In case of special naming conventions. Typically do not pass in.</param>
-    public ProjectileBehaviour(int defaultExitStatus, string behaviourName)
+    protected ProjectileBehaviour(int defaultExitStatus, string behaviourName)
     {
         Init(behaviourName, defaultExitStatus);
     }
@@ -82,7 +83,7 @@ public abstract class ProjectileBehaviour
     }
 
     /// <summary>
-    /// Schedules the <see cref="subBehaviour"/> to run on the next available tick.
+    /// Schedules the <see cref="_subBehaviour"/> to run on the next available tick.
     /// Suspends the parent behaviour during execution.
     /// </summary>
     protected void ReadySubBehaviour(BehaviourInfo behaviourInfo)
@@ -110,7 +111,7 @@ public abstract class ProjectileBehaviour
     protected virtual void AI(OmoriBehaviourProjectile projectile, BehaviourInfo behaviourInfo) { }
 
     /// <summary>
-    /// A hook method to allow you to write AI. Ran regardless of whether the <see cref="subBehaviour"/>
+    /// A hook method to allow you to write AI. Ran regardless of whether the <see cref="_subBehaviour"/>
     /// is executing or not. Runs BEFORE <see cref="AI(OmoriBehaviourProjectile, BehaviourInfo)"/>
     /// </summary>
     /// <param name="projectile"></param>
@@ -148,7 +149,7 @@ public abstract class ProjectileBehaviour
         {
             // if exiting, reset these values
             _runSubBehaviour = false;
-            subBehaviour?.Reset();
+            _subBehaviour?.Reset();
 
             if (isSubBehaviour)
             {
@@ -169,7 +170,7 @@ public abstract class ProjectileBehaviour
     /// <summary>
     /// Call this method to use your AI. Performs the <see cref="AI(OmoriBehaviourProjectile, BehaviourInfo)"/> method.
     /// This will also perform the <see cref="GuarenteedAI(OmoriBehaviourProjectile, BehaviourInfo)"/> every tick.
-    /// The <see cref="AI(OmoriBehaviourProjectile, BehaviourInfo)"/> method will NOT be run if the <see cref="subBehaviour"/> is running.
+    /// The <see cref="AI(OmoriBehaviourProjectile, BehaviourInfo)"/> method will NOT be run if the <see cref="_subBehaviour"/> is running.
     /// When the submethod is finished, the <see cref="BehaviourInfo"/> <paramref name="info"/> will be reset to the 
     /// value it was before the submethod started running.
     /// </summary>
@@ -189,7 +190,7 @@ public abstract class ProjectileBehaviour
         if (RunAI(GuaranteedAI, projectile, info, false)) { return; }
         if (_runSubBehaviour)
         {
-            RunAI(subBehaviour.PerformAI, projectile, info, true);
+            RunAI(_subBehaviour.PerformAI, projectile, info, true);
         }
         else
         {
@@ -210,9 +211,7 @@ public abstract class ProjectileBehaviour
 
     public override bool Equals(object obj)
     {
-        if (obj is ProjectileBehaviour other)
-            return BehaviourName == other.BehaviourName;
-        return false;
+        return obj is ProjectileBehaviour other ? BehaviourName == other.BehaviourName : false;
     }
 
     public override int GetHashCode()

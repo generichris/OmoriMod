@@ -13,21 +13,15 @@ public class FocusDamage : DamageClass
     public override StatInheritanceData GetModifierInheritance(DamageClass damageClass)
     {
 
-        if (damageClass == Generic)
-        {
-            return StatInheritanceData.Full;
-        }
-        else
-        {
-            return new StatInheritanceData(
+        return damageClass == Generic
+            ? StatInheritanceData.Full
+            : new StatInheritanceData(
             damageInheritance: 0f,
             critChanceInheritance: 0f,
             attackSpeedInheritance: 0f,
             armorPenInheritance: 0f,
             knockbackInheritance: 0f
             );
-
-        }
         /*
         if (damageClass == DamageClass.Ranged)
             return new StatInheritanceData(
@@ -57,10 +51,7 @@ public class FocusDamage : DamageClass
         // For this example, we'll make our class able to activate melee- and magic-specifically effects.
         if (damageClass == Ranged)
             return true;
-        if (damageClass == Magic)
-            return true;
-
-        return false;
+        return damageClass == Magic;
     }
 
     public override bool ShowStatTooltipLine(Player player, string lineName)

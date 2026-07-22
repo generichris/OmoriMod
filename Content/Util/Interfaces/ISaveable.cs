@@ -1,6 +1,6 @@
 ﻿using Terraria.ModLoader.IO;
 
-namespace OmoriMod.Util.Interfaces;
+namespace OmoriMod.Content.Util.Interfaces;
 
 /// <summary>
 /// A contract in for objects that need to be saved. 

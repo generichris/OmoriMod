@@ -1,5 +1,5 @@
 ﻿using OmoriMod.Content.Summons.Abstract_Classes;
-using OmoriMod.Systems.EmotionSystem;
+using OmoriMod.Content.Systems.EmotionSystem;
 
 using Terraria;
 
@@ -22,7 +22,7 @@ public class SharpenedFlowerProjectile : ModSummonProjectile
         Projectile.penetrate = -1; // Needed so the minion doesn't despawn on collision with enemies or tiles
 
         SetContactMinionDefaults();
-        SetEmotionType(EmotionType.HAPPY);
+        SetEmotionType(EmotionType.Happy);
     }
 
     public override bool MinionContactDamage()

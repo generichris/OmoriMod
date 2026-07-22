@@ -2,8 +2,9 @@ using OmoriMod.Content.Buffs.Abstract;
 using OmoriMod.Content.Buffs.SadBuff;
 using OmoriMod.Content.Items.Abstract_Classes;
 using OmoriMod.Content.Items.Abstract_Classes.BaseClasses;
+using OmoriMod.Content.Items.Abstract_Classes.Emotion_Classes;
 using OmoriMod.Content.Players;
-using OmoriMod.Systems.EmotionSystem;
+using OmoriMod.Content.Systems.EmotionSystem;
 
 using Terraria;
 using Terraria.ModLoader;
@@ -18,26 +19,20 @@ public class RainCloud : EmotionBuffItem
     }
     public override void SetDefaults()
     {
-        SetEmotionType(EmotionType.SAD);
+        SetEmotionType(EmotionType.Sad);
         EmotionItemClone<AirHorn>();
     }
 
     public override bool CanUseItemEmotionBuffItem(Player player)
     {
-        EmotionPlayer emotionPlayer = player.GetModPlayer<EmotionPlayer>();
-
-        if (emotionPlayer.Emotion == EmotionType.SAD || emotionPlayer.Emotion == EmotionType.NONE) { return true; }
-        return false;
+        return EmotionSystem.CanApplyOrPromoteEmotion<SadEmotionBase>(player);
     }
 
     public override bool? UseItemEmotionBuffItem(Player player)
     {
-        EmotionSystem.ApplyOrPromoteBuff<SadEmotionBase>(
+        return EmotionSystem.ApplyOrPromoteEmotion<SadEmotionBase>(
             player: player,
-            baseBuffType: ModContent.BuffType<Sad>(),
-            duration: EmotionSystem.EMOTION_TIME_IN_SECONDS * 60
-            );
-
-        return true;
+            duration: EmotionStatTuning.EmotionTimeInSeconds * 60
+        );
     }
 }

@@ -4,10 +4,10 @@ using OmoriMod.Content.Items.Health;
 using OmoriMod.Content.NPCs.Classes;
 using OmoriMod.Content.NPCs.Enemies.Bosses.YeOldSprout.Behaviours;
 using OmoriMod.Content.NPCs.General_Behaviours.Backgrounds;
-using OmoriMod.Systems;
-using OmoriMod.Systems.State_Management.Behaviour_Info;
-using OmoriMod.Systems.State_Management.NPCs;
-using OmoriMod.Util;
+using OmoriMod.Content.Systems;
+using OmoriMod.Content.Systems.State_Management.Behaviour_Info;
+using OmoriMod.Content.Systems.State_Management.NPCs;
+using OmoriMod.Content.Util;
 
 using Terraria;
 using Terraria.GameContent.ItemDropRules;

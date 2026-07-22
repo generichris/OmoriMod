@@ -1,5 +1,5 @@
 using OmoriMod.Content.Items.Abstract_Classes.BaseClasses;
-using OmoriMod.Systems;
+using OmoriMod.Content.Systems;
 
 using Terraria;
 using Terraria.ID;
