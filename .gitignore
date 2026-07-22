@@ -9,3 +9,5 @@ todo.txt
 
 ## compiled mod ##
 *.dll
+*.csproj.user
+
