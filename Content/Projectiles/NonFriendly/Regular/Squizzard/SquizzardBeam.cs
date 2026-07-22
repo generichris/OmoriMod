@@ -2,10 +2,8 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using OmoriMod.Content.Buffs.AngryBuff;
-using OmoriMod.Content.Buffs.HappyBuff;
-using OmoriMod.Content.Buffs.SadBuff;
 using OmoriMod.Content.Projectiles.Abstract_Classes;
+using OmoriMod.Content.Systems.EmotionSystem;
 
 namespace OmoriMod.Content.Projectiles.NonFriendly.Regular.Squizzard
 {
@@ -101,22 +99,20 @@ namespace OmoriMod.Content.Projectiles.NonFriendly.Regular.Squizzard
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info)
         {
-
-            int happyID = ModContent.BuffType<Happy>();
-            int sadID = ModContent.BuffType<Sad>();
-            int angryID = ModContent.BuffType<Angry>();
-
-            if (target.HasBuff(happyID) || target.HasBuff(sadID) || target.HasBuff(angryID))
+            if (EmotionSystem.GetEmotionType(target).HasValue)
             {
                 Projectile.Kill();
                 return;
             }
 
-            int[] potentialBuffs = new int[] { happyID, sadID, angryID };
-            int randomIndex = Main.rand.Next(potentialBuffs.Length);
-            int selectedBuff = potentialBuffs[randomIndex];
+            EmotionType[] potentialEmotions = [EmotionType.Happy, EmotionType.Sad, EmotionType.Angry];
+            EmotionType selectedEmotion = potentialEmotions[Main.rand.Next(potentialEmotions.Length)];
 
-            target.AddBuff(selectedBuff, 1000);
+            int? buffType = EmotionSystem.GetEmotionBuffType(selectedEmotion, 1);
+            if (buffType.HasValue)
+            {
+                target.AddBuff(buffType.Value, 1000);
+            }
 
             Projectile.Kill();
         }
