@@ -11,3 +11,7 @@ todo.txt
 *.dll
 *.csproj.user
 
+*.dll
+
+## testing artifacts
+/artifacts/

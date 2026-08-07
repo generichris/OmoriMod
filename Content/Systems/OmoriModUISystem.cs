@@ -48,7 +48,7 @@ public class OmoriModUiSystem : ModSystem
         if (generalUiIndex == -1) { return; }
 
         layers.Insert(generalUiIndex, new LegacyGameInterfaceLayer(
-            OmoriMod.MOD_NAME + "AbilityMenu",
+            OmoriMod.ModName + "AbilityMenu",
             delegate
             {
                 _abilityMenuInterface.Draw(Main.spriteBatch, new GameTime());
@@ -57,7 +57,7 @@ public class OmoriModUiSystem : ModSystem
             InterfaceScaleType.UI));
 
         layers.Insert(generalUiIndex, new LegacyGameInterfaceLayer(
-            OmoriMod.MOD_NAME + "ChargeBar",
+            OmoriMod.ModName + "ChargeBar",
             delegate
             {
                 _chargeBarInterface.Draw(Main.spriteBatch, new GameTime());

@@ -92,22 +92,28 @@ public abstract class SadEmotionBase : EmotionBuff
         npc.position += change;
     }
 
-    public override void ModifyPlayerIncomingDamage(int emotionLevel, ref Player.HurtModifiers modifiers)
+    public override void ModifyPlayerIncomingDamage(Player player, int emotionLevel, ref Player.HurtModifiers modifiers)
     {
-        modifiers.SourceDamage -= GetHealthDamageToManaDamageConversionPercent(emotionLevel);
+        float conversionPercent = GetHealthDamageToManaDamageConversionPercent(emotionLevel);
+        EmotionPlayer emotionPlayer = player.GetModPlayer<EmotionPlayer>();
+
+        modifiers.ModifyHurtInfo += (ref Player.HurtInfo hurtInfo) =>
+        {
+            int requestedManaDamage = (int)MathF.Round(
+                hurtInfo.Damage * conversionPercent,
+                MidpointRounding.AwayFromZero);
+            int maximumMitigation = Math.Max(0, hurtInfo.Damage - 1);
+            int manaDamage = Math.Min(player.statMana, Math.Min(requestedManaDamage, maximumMitigation));
+
+            hurtInfo.Damage -= manaDamage;
+            emotionPlayer.PendingSadManaDamage = manaDamage;
+        };
     }
 
     public override void OnPlayerHurt(Player player, int emotionLevel, Player.HurtInfo hurtInfo)
     {
-        float manaChange = hurtInfo.SourceDamage * GetHealthDamageToManaDamageConversionPercent(emotionLevel);
-        if ((int)(player.statMana - manaChange) > 0)
-        {
-            player.statMana = (int)(player.statMana - manaChange);
-        }
-        else
-        {
-            player.statMana = 0;
-        }
+        EmotionPlayer emotionPlayer = player.GetModPlayer<EmotionPlayer>();
+        player.statMana = Math.Max(0, player.statMana - emotionPlayer.PendingSadManaDamage);
     }
 
     /// <summary>Allows a concrete Sad tier to append or replace tier-specific tooltip content.</summary>
@@ -120,7 +126,7 @@ public abstract class SadEmotionBase : EmotionBuff
         int mana = (int)MathF.Round(GetHealthDamageToManaDamageConversionPercent(emotionLevel) * 100);
         string buffTip = $"Defense up by {defenseUp}%!" +
             $" Speed down by {speedDown}%!" +
-            $" {mana}% of damage convertd to mana damage!";
+            $" Up to {mana}% of damage converted to mana damage while mana is available!";
         tip = buffTip;
         SadModifyBuffText(ref buffName, ref tip, ref rare);
         FinalTierModifyBuffText(emotionLevel, ref buffName, ref tip, ref rare);

@@ -13,6 +13,40 @@
       "stopAtEntry": false
     },
     {
+      "name": "Run Unit Tests — Microsoft C#",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${env:DOTNETLOCATION}",
+      "args": [
+        "test",
+        "Tests/OmoriMod.Tests/OmoriMod.Tests.csproj",
+        "--logger",
+        "console;verbosity=normal"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "stopAtEntry": false
+    },
+    {
+      "name": "Run Unit Tests With Coverage — Microsoft C#",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${env:DOTNETLOCATION}",
+      "args": [
+        "test",
+        "Tests/OmoriMod.Tests/OmoriMod.Tests.csproj",
+        "--results-directory",
+        "artifacts/test-results",
+        "--logger",
+        "console;verbosity=normal",
+        "--collect:XPlat Code Coverage"
+      ],
+      "cwd": "${workspaceFolder}",
+      "postDebugTask": "generate and open coverage report",
+      "console": "integratedTerminal",
+      "stopAtEntry": false
+    },
+    {
       "name": "Launch tModLoader — ReSharper",
       "type": "coreclr",
       "request": "launch",
@@ -21,6 +55,36 @@
       "runtimeExecutable": "${env:TMLSTEAMPATH}\\dotnet\\dotnet.exe",
       "args": [],
       "cwd": "${env:TMLSTEAMPATH}"
+    },
+    {
+      "name": "Run Unit Tests — ReSharper",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${env:DOTNETLOCATION}",
+      "args": [
+        "test",
+        "Tests/OmoriMod.Tests/OmoriMod.Tests.csproj",
+        "--logger",
+        "console;verbosity=normal"
+      ],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Run Unit Tests With Coverage — ReSharper",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${env:DOTNETLOCATION}",
+      "args": [
+        "test",
+        "Tests/OmoriMod.Tests/OmoriMod.Tests.csproj",
+        "--results-directory",
+        "artifacts/test-results",
+        "--logger",
+        "console;verbosity=normal",
+        "--collect:\"XPlat Code Coverage\""
+      ],
+      "cwd": "${workspaceFolder}",
+      "postDebugTask": "generate and open coverage report"
     }
   ]
 }

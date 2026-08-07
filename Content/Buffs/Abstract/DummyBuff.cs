@@ -28,6 +28,7 @@ public class DummyBuff : ModBuff
         buffName = "";
         tip = "";
     }
+    
     public override bool PreDraw(SpriteBatch spriteBatch, int buffIndex, ref BuffDrawParams drawParams)
     {
         return false;

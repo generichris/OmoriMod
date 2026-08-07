@@ -472,6 +472,12 @@ Items: {
 		Tooltip: increases your Jump and Speed by 50%
 	}
 
+	SproutMoleBanner: {
+		DisplayName: Sprout Mole Banner
+		Tooltip: ""
+	}
+}
+
 	RabbitsFootKeychain: {
 		DisplayName: Rabbits Foot Keychain
 		Tooltip: Brings forth a challenger from the depths of hell

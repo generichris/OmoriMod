@@ -2,10 +2,10 @@
 
 public static class OmoriModStringExtensions
 {
-    private static readonly string String = OmoriMod.MOD_NAME;
+    private const string String = OmoriMod.ModName;
 
     /// <summary>
-    /// Creates a string that has <see cref="OmoriMod.MOD_NAME"/> attached to the front.
+    /// Creates a string that has <see cref="OmoriMod.ModName"/> attached to the front.
     /// Simply because I want to stop typing it out.
     /// </summary>
     /// <param name="str"></param>

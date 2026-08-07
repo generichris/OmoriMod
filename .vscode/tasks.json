@@ -10,6 +10,88 @@
         "kind": "build",
         "isDefault": true
       }
+    },
+    {
+      "label": "run tests with coverage",
+      "type": "process",
+      "command": "${env:DOTNETLOCATION}",
+      "args": [
+        "test",
+        "Tests/OmoriMod.Tests/OmoriMod.Tests.csproj",
+        "--collect:XPlat Code Coverage",
+        "--results-directory",
+        "artifacts/test-results",
+        "--logger",
+        "console;verbosity=normal"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "generate coverage report",
+      "type": "process",
+      "command": "${env:DOTNETLOCATION}",
+      "args": [
+        "tool",
+        "run",
+        "reportgenerator",
+        "--",
+        "-reports:artifacts/test-results/**/coverage.cobertura.xml",
+        "-targetdir:artifacts/coverage",
+        "-reporttypes:Html"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent",
+        "panel": "dedicated",
+        "clear": true,
+        "showReuseMessage": false,
+        "close": true
+      }
+    },
+    {
+      "label": "open coverage report",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-NonInteractive",
+        "-Command",
+        "$reportPath = (Resolve-Path 'artifacts/coverage/index.html').Path; $reportUri = [System.Uri]::new($reportPath).AbsoluteUri; Start-Process ($reportUri + '?v=' + [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds())"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "never",
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "close": true
+      }
+    },
+    {
+      "label": "generate and open coverage report",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "generate coverage report",
+        "open coverage report"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "test with coverage report",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "run tests with coverage",
+        "generate and open coverage report"
+      ],
+      "problemMatcher": []
     }
   ]
 }

@@ -3,13 +3,11 @@
   <Import Project="..\tModLoader.targets" />
   <PropertyGroup>
     <AssemblyName>OmoriMod</AssemblyName>
-    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Content\Buffs\DummyBuff.png" />
-    <None Remove="Content\Items\BuffItems\EmotionalAmplifier.png" />
+    <Folder Include="Systems\AbilitySystem\ItemAbilities\Actives\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Systems\AbilitySystem\ItemAbilities\Actives\" />
+    <Compile Remove="Tests\**\*.cs" />
   </ItemGroup>
 </Project>

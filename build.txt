@@ -3,3 +3,6 @@ author = K3LV0N
 version = 1.20.0.0
 homepage = https://discord.gg/DzsvHCGfYq
 weakReferences = BossChecklist
+homepage = https://discord.gg/DzsvHCGfYq
+
+buildIgnore = *.csproj, *.user, obj\*, bin\*, .vs\*, .vscode\*, .git\*, .github\*, .config\*, Tests\*, artifacts\*, docs\*, PowerShell\*, Properties\*, README.md, .editorconfig, .gitignore

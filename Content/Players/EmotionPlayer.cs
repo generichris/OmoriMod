@@ -40,6 +40,9 @@ public class EmotionPlayer : ModPlayer, IEmotionEntity
     /// <summary>The progression midpoint selected for the current world difficulty.</summary>
     public int MidEmotionLevel;
 
+    /// <summary>The mana cost reserved by Sad mitigation for the current incoming hit.</summary>
+    internal int PendingSadManaDamage { get; set; }
+
     private void ResetMidEmotionLevel()
     {
         MidEmotionLevel = Main.hardMode ? 10 : 6;
@@ -98,12 +101,20 @@ public class EmotionPlayer : ModPlayer, IEmotionEntity
     /// <summary>Applies incoming-damage behavior supplied by the active emotion.</summary>
     public override void ModifyHurt(ref Player.HurtModifiers modifiers)
     {
-        ActiveEmotionBuff?.ModifyPlayerIncomingDamage(EmotionLevel, ref modifiers);
+        PendingSadManaDamage = 0;
+        ActiveEmotionBuff?.ModifyPlayerIncomingDamage(Player, EmotionLevel, ref modifiers);
     }
 
     /// <summary>Dispatches post-damage behavior supplied by the active emotion.</summary>
     public override void OnHurt(Player.HurtInfo info)
     {
-        EmotionSystem.HandlePlayerHurt(Player, info);
+        try
+        {
+            EmotionSystem.HandlePlayerHurt(Player, info);
+        }
+        finally
+        {
+            PendingSadManaDamage = 0;
+        }
     }
 }

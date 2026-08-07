@@ -175,6 +175,16 @@ public abstract class EmotionBuff : ModBuff, IEmotionObject
     /// <summary>Modifies incoming damage before an emotional player is hurt.</summary>
     public virtual void ModifyPlayerIncomingDamage(int emotionLevel, ref Player.HurtModifiers modifiers) { }
 
+    /// <summary>Modifies incoming damage with access to the player receiving the hit.</summary>
+    /// <remarks>
+    /// The default implementation preserves compatibility with emotion families that override the
+    /// context-free overload.
+    /// </remarks>
+    public virtual void ModifyPlayerIncomingDamage(Player player, int emotionLevel, ref Player.HurtModifiers modifiers)
+    {
+        ModifyPlayerIncomingDamage(emotionLevel, ref modifiers);
+    }
+
     /// <summary>Runs emotion-specific behavior after a player takes damage.</summary>
     public virtual void OnPlayerHurt(Player player, int emotionLevel, Player.HurtInfo hurtInfo) { }
 

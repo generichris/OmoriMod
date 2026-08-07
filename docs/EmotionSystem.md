@@ -234,7 +234,7 @@ With the current `0.07f` tuning value, each advantage level changes source damag
 
 Combat resolution applies emotional advantage first, then dispatches to the attacker's active buff. The overload using `NPC.HitModifiers` handles attacks against NPCs, while the overload using `Player.HurtModifiers` handles attacks against players.
 
-Player incoming-damage and post-hurt effects use `EmotionPlayer.ModifyHurt` and `EmotionPlayer.OnHurt`. Sad uses these hooks to reduce health damage and subtract the converted share from mana after the hit.
+Player incoming-damage and post-hurt effects use `EmotionPlayer.ModifyHurt` and `EmotionPlayer.OnHurt`. Sad calculates its conversion from finalized post-defense damage and redirects one point of health damage to one point of mana damage, limited by both its conversion percentage and the player's available mana. The exact converted amount is reserved during damage calculation and charged only after the hit lands, so a player with no mana receives no mitigation. For example, at 75% conversion, a 100-damage hit deals 25 health and 75 mana damage with at least 75 mana, 50 health and 50 mana damage with 50 mana, and 100 health damage with no mana.
 
 ## Stat scaling
 
