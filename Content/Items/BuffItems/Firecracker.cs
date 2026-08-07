@@ -6,15 +6,13 @@ using OmoriMod.Content.Players;
 using OmoriMod.Content.Systems.EmotionSystem;
 
 using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace OmoriMod.Content.Items.BuffItems;
 
 public class Firecracker : EmotionBuffItem
 {
-    Firecracker()
-    {
-        itemTypeForResearch = ItemTypeForResearch.BuffPotion;
-    }
     public override void SetDefaults()
     {
         SetEmotionType(EmotionType.Fear);

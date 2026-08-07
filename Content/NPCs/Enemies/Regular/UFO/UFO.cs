@@ -11,7 +11,7 @@ using OmoriMod.Content.NPCs.Classes;
 using OmoriMod.Content.NPCs.General_Behaviours.Actives;
 using OmoriMod.Content.NPCs.General_Behaviours.Backgrounds;
 using OmoriMod.Content.Projectiles.NonFriendly.Regular.UFO;
-using OmoriMod.Systems.State_Management.NPCs;
+using OmoriMod.Content.Systems.State_Management.NPCs;
 
 namespace OmoriMod.Content.NPCs.Enemies.Regular.UFO
 {

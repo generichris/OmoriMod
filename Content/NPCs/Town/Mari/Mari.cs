@@ -5,8 +5,8 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using OmoriMod.Systems;
-using OmoriMod.Util;
+using OmoriMod.Content.Systems;
+using OmoriMod.Content.Util;
 
 namespace OmoriMod.Content.NPCs.Town.Mari
 {

@@ -13,7 +13,7 @@ using OmoriMod.Content.Items.BossRelated.BossSummons;
 using OmoriMod.Content.NPCs.Enemies.Bosses.Rabbit;
 using OmoriMod.Content.NPCs.Enemies.Bosses.SweetHeart;
 using OmoriMod.Content.NPCs.Enemies.Bosses.YeOldSprout;
-using OmoriMod.Util;
+using OmoriMod.Content.Util;
 
 namespace OmoriMod.Content.Systems;
 
