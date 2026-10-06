@@ -23,6 +23,9 @@ public class EmotionNPC : GlobalNPC, IEmotionEntity
     /// <summary>Gets whether each NPC receives an independent instance of this global component.</summary>
     public override bool InstancePerEntity => true;
 
+    /// <summary>The preferred emotion buff type, resolved once per tick in <see cref="ResetEffects"/>.</summary>
+    internal int? PreferredEmotionBuffType { get; private set; }
+
     /// <summary>Gets or sets the NPC's currently resolved emotion.</summary>
     public EmotionType Emotion { get; set; }
 
@@ -61,6 +64,7 @@ public class EmotionNPC : GlobalNPC, IEmotionEntity
         Emotion = EmotionType.None;
         ActiveEmotionBuff = null;
         EmotionLevel = 0;
+        PreferredEmotionBuffType = EmotionSystem.GetEmotionType(npc);
     }
 
 
@@ -72,36 +76,53 @@ public class EmotionNPC : GlobalNPC, IEmotionEntity
     private void NpcColorChangeFromEmotion(NPC npc)
     {
         OriginalColor ??= npc.color;
-        ColorTimer++;
-        if (Emotion != EmotionType.None)
-        {
-            Color colorNeeded = Emotion switch
-            {
-                EmotionType.Angry => Color.Red,
-                EmotionType.Sad => Color.Blue,
-                EmotionType.Happy => Color.Yellow,
-                _ => Color.White
-            };
-            // Flash emotion color and original color
-            if (ColorTimer > 60)
-            {
-                npc.color = Color.Lerp(npc.color, (Color)OriginalColor, 0.1f);
+        Color original = OriginalColor.Value;
 
-                if (ColorTimer > 90)
-                {
-                    ColorTimer = 0;
-                }
-            }
-            else
+        if (Emotion == EmotionType.None)
+        {
+            // Nothing to do for the vast majority of NPCs.
+            ColorTimer = 0;
+            if (npc.color != original)
             {
-                npc.color = Color.Lerp(npc.color, colorNeeded, 0.1f);
+                npc.color = StepToward(npc.color, original);
+            }
+            return;
+        }
+
+        ColorTimer++;
+        Color colorNeeded = EmotionColors.Get(Emotion);
+        // Flash emotion color and original color
+        if (ColorTimer > 60)
+        {
+            npc.color = Color.Lerp(npc.color, original, 0.1f);
+
+            if (ColorTimer > 90)
+            {
+                ColorTimer = 0;
             }
         }
         else
         {
-            // if we need to fix the color then do it, otherwise don't mess with the color
-            if (npc.color != (Color)OriginalColor) { npc.color = Color.Lerp(npc.color, (Color)OriginalColor, 0.1f); }
+            npc.color = Color.Lerp(npc.color, colorNeeded, 0.1f);
         }
+    }
+
+    /// <summary>
+    /// Lerps a color toward a target and snaps to it once close. Lerping bytes by 10% truncates,
+    /// so it would otherwise stall a few units short and never reach the target.
+    /// </summary>
+    private static Color StepToward(Color from, Color to)
+    {
+        const int snapDistance = 10;
+        if (System.Math.Abs(from.R - to.R) <= snapDistance
+            && System.Math.Abs(from.G - to.G) <= snapDistance
+            && System.Math.Abs(from.B - to.B) <= snapDistance
+            && System.Math.Abs(from.A - to.A) <= snapDistance)
+        {
+            return to;
+        }
+
+        return Color.Lerp(from, to, 0.1f);
     }
 
     /// <summary>Updates the emotion tint after the NPC's normal AI hooks complete.</summary>

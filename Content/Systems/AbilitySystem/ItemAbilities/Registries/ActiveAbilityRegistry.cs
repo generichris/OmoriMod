@@ -4,7 +4,7 @@ namespace OmoriMod.Content.Systems.AbilitySystem.ItemAbilities.Registries;
 
 public static class ActiveAbilityRegistry
 {
-    private static readonly Dictionary<int, IItemAbility> _abilities = new Dictionary<int, IItemAbility>();
+    private static readonly Dictionary<int, IItemAbility> _abilities = [];
 
     // ID Enum
     public enum ActiveAbilityID : int
@@ -17,6 +17,11 @@ public static class ActiveAbilityRegistry
         _abilities.Clear();
 
         // Register Abilities
+    }
+
+    public static void Unload()
+    {
+        _abilities.Clear();
     }
 
     public static void Register(int id, IItemAbility ability)

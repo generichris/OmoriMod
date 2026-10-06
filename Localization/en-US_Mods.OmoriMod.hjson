@@ -691,42 +691,42 @@ Buffs: {
 
 	GShrooberBuff: {
 		DisplayName: G Shroober Buff
-		Description: Mods.OmoriMod.Buffs.GShrooberBuff.Description
+		Description: A G Shroober is fighting for you
 	}
 
 	Fear: {
 		DisplayName: Fear
-		Description: Mods.OmoriMod.Buffs.Fear.Description
+		Description: Speed up! Hit chance down! Damage down! Regenerating life!
 	}
 
 	FlyingSproutMoleBuff: {
 		DisplayName: Flying Sprout Mole Buff
-		Description: Mods.OmoriMod.Buffs.FlyingSproutMoleBuff.Description
+		Description: A flying Sprout Mole is fighting for you
 	}
 
 	SharpenedFlowerBuff: {
 		DisplayName: Sharpened Flower Buff
-		Description: Mods.OmoriMod.Buffs.SharpenedFlowerBuff.Description
+		Description: A sharpened flower is fighting for you
 	}
 
 	PearGooberBuff: {
 		DisplayName: Pear Goober Buff
-		Description: Mods.OmoriMod.Buffs.PearGooberBuff.Description
+		Description: A Pear Goober is fighting for you
 	}
 
 	SadGooberBuff: {
 		DisplayName: Sad Goober Buff
-		Description: Mods.OmoriMod.Buffs.SadGooberBuff.Description
+		Description: A Sad Goober is fighting for you
 	}
 
 	AngryGooberBuff: {
 		DisplayName: Angry Goober Buff
-		Description: Mods.OmoriMod.Buffs.AngryGooberBuff.Description
+		Description: An Angry Goober is fighting for you
 	}
 
 	HappyGooberBuff: {
 		DisplayName: Happy Goober Buff
-		Description: Mods.OmoriMod.Buffs.HappyGooberBuff.Description
+		Description: A Happy Goober is fighting for you
 	}
 }
 

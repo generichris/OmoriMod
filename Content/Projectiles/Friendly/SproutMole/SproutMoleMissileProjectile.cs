@@ -56,30 +56,6 @@ namespace OmoriMod.Content.Projectiles.Friendly.SproutMole
             Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Smoke, 0f, 0f, 150, default, 1f);
         }
 
-        private static NPC FindClosestNPCToPoint(Vector2 point, float maxDetectDistance)
-        {
-            NPC closestNPC = null;
-            float sqrMaxDetectDistance = maxDetectDistance * maxDetectDistance;
-
-            for (int i = 0; i < Main.maxNPCs; i++)
-            {
-                NPC npc = Main.npc[i];
-
-                if (npc.CanBeChasedBy())
-                {
-                    float sqrDistance = Vector2.DistanceSquared(npc.Center, point);
-
-                    if (sqrDistance < sqrMaxDetectDistance)
-                    {
-                        sqrMaxDetectDistance = sqrDistance;
-                        closestNPC = npc;
-                    }
-                }
-            }
-
-            return closestNPC;
-        }
-
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             Explode();

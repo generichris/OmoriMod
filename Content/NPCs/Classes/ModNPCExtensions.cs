@@ -35,12 +35,12 @@ public static class ModNPCExtensions
     /// <param name="npc">The NPC this extension is applied to (unused, just for extension).</param>
     /// <param name="amountOfVectors">Number of vectors to generate.</param>
     /// <param name="maxAngle">Maximum angle in degrees from horizontal.</param>
-    /// <returns>A HashSet of Vector2 representing the unit vectors.</returns>
-    public static HashSet<Vector2> CreateVectors(this ModNPC npc, int amountOfVectors, float maxAngle)
+    /// <returns>An array of unit vectors, in order from leftmost to rightmost.</returns>
+    public static Vector2[] CreateVectors(this ModNPC npc, int amountOfVectors, float maxAngle)
     {
-        HashSet<Vector2> vectors = [];
+        if (amountOfVectors <= 0) return [];
 
-        if (amountOfVectors <= 0) return vectors;
+        Vector2[] vectors = new Vector2[amountOfVectors];
 
         // Calculate step angle between vectors
         float step = amountOfVectors == 1 ? 0f : maxAngle * 2f / (amountOfVectors - 1);
@@ -53,7 +53,7 @@ public static class ModNPCExtensions
 
             // Create unit vector
             Vector2 v = new Vector2((float)Math.Cos(angleRad), (float)Math.Sin(angleRad));
-            vectors.Add(Vector2.Normalize(v));
+            vectors[i] = Vector2.Normalize(v);
         }
 
         return vectors;
@@ -104,6 +104,8 @@ public static class ModNPCExtensions
     /// <returns></returns>
     public static double FindDistance(this ModNPC npc, double x1, double x2, double y1, double y2)
     {
-        return Math.Sqrt(Math.Pow(x1 - x2, 2) + Math.Pow(y1 - y2, 2));
+        double dx = x1 - x2;
+        double dy = y1 - y2;
+        return Math.Sqrt(dx * dx + dy * dy);
     }
 }

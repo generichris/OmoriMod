@@ -59,12 +59,12 @@ public abstract class FearEmotionBase : EmotionBuff
     protected FearEmotionBase()
     {
         Emotion = EmotionType.Fear;
-        _dustColor = Color.Gray;
+        _dustColor = EmotionColors.Get(Emotion);
     }
 
     public override void UpdateEmotionBuff(Player player, ref int buffIndex)
     {
-        EmotionSystem.RemoveIncompatibleEmotions<FearEmotionBase>(player);
+        EmotionSystem.RemoveIncompatibleEmotions(player, this);
         int emotionLevel = player.GetModPlayer<EmotionPlayer>().EmotionLevel;
         ModifyPlayerMovement(player, emotionLevel);
         ApplyPlayerLifeRegen(player, emotionLevel);
@@ -72,7 +72,7 @@ public abstract class FearEmotionBase : EmotionBuff
 
     public override void UpdateEmotionBuff(NPC npc, ref int buffIndex)
     {
-        EmotionSystem.RemoveIncompatibleEmotions<FearEmotionBase>(npc);
+        EmotionSystem.RemoveIncompatibleEmotions(npc, this);
         ModifyNpcMovement(npc, npc.GetGlobalNPC<EmotionNPC>().EmotionLevel);
     }
 

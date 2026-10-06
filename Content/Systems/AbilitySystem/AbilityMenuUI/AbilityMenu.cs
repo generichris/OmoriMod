@@ -117,20 +117,11 @@ public class AbilityMenu : UIState
         base.Draw(spriteBatch);
     }
 
-    protected override void DrawSelf(SpriteBatch spriteBatch)
-    {
-        base.DrawSelf(spriteBatch);
-    }
-
     public override void Update(GameTime gameTime)
     {
         if (!Main.LocalPlayer.GetModPlayer<AbilityPlayer>().abilityMenuActive)
         {
             return;
-        }
-        if (PassiveAbilityRegistry.GetAbility(PassiveAbilityRegistry.PassiveAbilityID.SINGLE_PHANTOM_BAT) == null)
-        {
-            PassiveAbilityRegistry.Initialize();
         }
         base.Update(gameTime);
     }

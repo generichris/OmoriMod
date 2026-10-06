@@ -97,13 +97,8 @@ public class TickTimer : ISaveableWithGenerate
     /// <param name="seconds"></param>
     /// <param name="ticks"></param>
     public TickTimer(long seconds, long ticks)
+        : this(seconds * 60 + ticks)
     {
-        _totalTicks =
-            seconds * 60 +
-            ticks;
-
-        if (_totalTicks < 0) _totalTicks = 0; // clamp safety
-        _originalTicks = _totalTicks;
     }
 
     /// <summary>
@@ -113,14 +108,8 @@ public class TickTimer : ISaveableWithGenerate
     /// <param name="seconds"></param>
     /// <param name="ticks"></param>
     public TickTimer(long minutes, long seconds, long ticks)
+        : this(minutes * 3600 + seconds * 60 + ticks)
     {
-        _totalTicks =
-            minutes * 3600 +
-            seconds * 60 +
-            ticks;
-
-        if (_totalTicks < 0) _totalTicks = 0; // clamp safety
-        _originalTicks = _totalTicks;
     }
 
     /// <summary>
@@ -131,15 +120,8 @@ public class TickTimer : ISaveableWithGenerate
     /// <param name="seconds"></param>
     /// <param name="ticks"></param>
     public TickTimer(long hours, long minutes, long seconds, long ticks)
+        : this(hours * 216000 + minutes * 3600 + seconds * 60 + ticks)
     {
-        _totalTicks =
-            hours * 216000 +
-            minutes * 3600 +
-            seconds * 60 +
-            ticks;
-
-        if (_totalTicks < 0) _totalTicks = 0; // clamp safety
-        _originalTicks = _totalTicks;
     }
 
     /// <summary>

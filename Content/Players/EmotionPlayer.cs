@@ -30,6 +30,9 @@ public class EmotionPlayer : ModPlayer, IEmotionEntity
     /// <summary>Gets or sets the level currently used for player stat scaling.</summary>
     public int EmotionLevel { get; set; }
 
+    /// <summary>The preferred emotion buff type, resolved once per tick in <see cref="ResetEffects"/>.</summary>
+    internal int? PreferredEmotionBuffType { get; private set; }
+
     /// <summary>Gets whether normal emotion applications are blocked for this player.</summary>
     public bool ImmuneToEmotionChange => false;
 
@@ -129,21 +132,19 @@ public class EmotionPlayer : ModPlayer, IEmotionEntity
 
     private void ResetScalingEmotionLevel()
     {
-        int? emotionType = EmotionSystem.GetEmotionType(Player);
+        int? emotionType = PreferredEmotionBuffType;
         if (!emotionType.HasValue
             || !EmotionSystem.IsFinalEmotionTier(emotionType.Value)
             || ModContent.GetModBuff(emotionType.Value) is not EmotionBuff emotionBuff
             || emotionBuff.ScalingMode != EmotionScalingMode.Capped
-            || !EmotionSystem.GetMaxEmotionTier(emotionBuff.Emotion).HasValue)
+            || EmotionSystem.GetMaxEmotionTier(emotionBuff.Emotion) is not int maxTier)
         {
             ScalingEmotion = EmotionType.None;
             ScalingEmotionLevel = 0;
             return;
         }
 
-        EnsureScalingEmotion(
-            emotionBuff.Emotion,
-            EmotionSystem.GetMaxEmotionTier(emotionBuff.Emotion).Value);
+        EnsureScalingEmotion(emotionBuff.Emotion, maxTier);
     }
 
     /// <summary>Clears transient emotion state and restores valid final-tier scaling state each tick.</summary>
@@ -152,6 +153,7 @@ public class EmotionPlayer : ModPlayer, IEmotionEntity
         Emotion = EmotionType.None;
         ActiveEmotionBuff = null;
         EmotionLevel = 0;
+        PreferredEmotionBuffType = EmotionSystem.GetEmotionType(Player);
         ResetMidEmotionLevel();
         ResetScalingEmotionLevel();
     }

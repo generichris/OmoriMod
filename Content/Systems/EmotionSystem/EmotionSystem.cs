@@ -137,7 +137,7 @@ public static class EmotionSystem
     /// <returns>The active emotion buff type, or <see langword="null"/> when none is present.</returns>
     public static int? GetEmotionType(Entity entity)
     {
-        return s_service.GetPreferredEmotionBuffType(GetBuffListOfEntity(entity));
+        return s_service.ResolvePreferredEmotionBuffType(GetBuffListOfEntity(entity));
     }
 
     /// <summary>
@@ -289,19 +289,36 @@ public static class EmotionSystem
         RemoveIncompatibleEmotions(entity, buffInstance);
     }
 
-    private static void RemoveIncompatibleEmotions(Entity entity, EmotionBuff emotion)
+    /// <summary>
+    /// Removes active emotions that the given emotion buff cannot coexist with. Allocates only
+    /// when something actually needs removing.
+    /// </summary>
+    internal static void RemoveIncompatibleEmotions(Entity entity, EmotionBuff emotion)
     {
         int[] buffs = GetBuffListOfEntity(entity);
 
-        List<int> buffsToRemove = [];
-        foreach (int buffId in buffs)
+        // Removal shifts the buff array, so collect first and remove afterwards.
+        List<int> buffsToRemove = null;
+        for (int i = 0; i < buffs.Length; i++)
         {
-            ModBuff modBuff = ModContent.GetModBuff(buffId);
-            if (modBuff is EmotionBuff currentBuff && emotion.IsIncompatibleWith(currentBuff))
+            int buffId = buffs[i];
+            if (buffId <= 0)
             {
+                continue;
+            }
+
+            if (ModContent.GetModBuff(buffId) is EmotionBuff currentBuff && emotion.IsIncompatibleWith(currentBuff))
+            {
+                buffsToRemove ??= new List<int>();
                 buffsToRemove.Add(buffId);
             }
         }
+
+        if (buffsToRemove == null)
+        {
+            return;
+        }
+
         foreach (int id in buffsToRemove) RemoveEmotion(entity, id);
     }
 

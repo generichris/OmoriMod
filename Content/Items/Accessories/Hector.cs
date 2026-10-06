@@ -107,7 +107,7 @@ namespace OmoriMod.Content.Items.Accessories
         
         public override void ResetEffects()
         {
-            Player.GetModPlayer<OmoriPlayer>().accessoryEquipped = false;
+            accessoryEquipped = false;
         }
         public override void PostUpdate()
         {

@@ -64,10 +64,6 @@ public class NPCBehaviourManager(OmoriBehaviourNPC npc, int totalFrames)
     /// </summary>
     private TickTimer timeBetweenBehaviours = new();
 
-    /// <summary>
-    /// Random number generator used for randomly selecting behaviours.
-    /// </summary>
-    private readonly Random random = new();
     private readonly List<NPCBehaviour> behaviourList = [];
     private readonly List<NPCBackgroundBehaviour> backgroundBehaviourList = [];
     private NPCBehaviour idleBehaviour = null;
@@ -184,6 +180,11 @@ public class NPCBehaviourManager(OmoriBehaviourNPC npc, int totalFrames)
         return selectedBehaviour.IsDone;
     }
 
+    // Cached so the method-group conversion doesn't allocate a delegate every tick.
+    private Action<bool> _randomSelector;
+    private Action<bool> _inOrderSelector;
+    private Action<bool> _exitStatusSelector;
+
     /// <summary>
     /// Selects a new behaviour at random from <see cref="behaviourList"/>.
     /// </summary>
@@ -194,10 +195,10 @@ public class NPCBehaviourManager(OmoriBehaviourNPC npc, int totalFrames)
     /// </param>
     private void RandomSelector(bool init)
     {
-        if (init) { selectedBehaviour ??= behaviourList[random.Next(behaviourList.Count)]; }
+        if (init) { selectedBehaviour ??= behaviourList[Terraria.Main.rand.Next(behaviourList.Count)]; }
         else
         {
-            SelectNewBehaviour(random.Next(behaviourList.Count));
+            SelectNewBehaviour(Terraria.Main.rand.Next(behaviourList.Count));
         }
     }
 
@@ -297,7 +298,7 @@ public class NPCBehaviourManager(OmoriBehaviourNPC npc, int totalFrames)
     /// </summary>
     public void PerformAIViaRandomBehaviour()
     {
-        PerformAI(RandomSelector);
+        PerformAI(_randomSelector ??= RandomSelector);
     }
 
     /// <summary>
@@ -320,7 +321,7 @@ public class NPCBehaviourManager(OmoriBehaviourNPC npc, int totalFrames)
     /// </summary>
     public void PerformAIViaInOrderBehaviour()
     {
-        PerformAI(InOrderSelector);
+        PerformAI(_inOrderSelector ??= InOrderSelector);
     }
 
     /// <summary>
@@ -344,7 +345,7 @@ public class NPCBehaviourManager(OmoriBehaviourNPC npc, int totalFrames)
     /// </summary>
     public void PerformAIViaExitStatus()
     {
-        PerformAI(ExitStatusSelector);
+        PerformAI(_exitStatusSelector ??= ExitStatusSelector);
     }
 
     /// <summary>

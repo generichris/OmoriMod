@@ -11,4 +11,10 @@ public class AbilitySystem : ModSystem
         PassiveAbilityRegistry.Initialize();
         ActiveAbilityRegistry.Initialize();
     }
+
+    public override void Unload()
+    {
+        PassiveAbilityRegistry.Unload();
+        ActiveAbilityRegistry.Unload();
+    }
 }

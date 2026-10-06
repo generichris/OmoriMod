@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using OmoriMod.Content.Buffs.Abstract;
 using OmoriMod.Content.Systems.EmotionSystem.Interfaces;
@@ -75,12 +76,27 @@ internal sealed class EmotionService
 
     internal int? GetPreferredEmotionBuffType(IEnumerable<int> candidateBuffTypes)
     {
+        // An int[] passed as IEnumerable<int> would allocate an enumerator, so use the array path.
+        return candidateBuffTypes is int[] array
+            ? ResolvePreferredEmotionBuffType(array)
+            : ResolvePreferredEmotionBuffType(candidateBuffTypes.ToArray());
+    }
+
+    /// <summary>Allocation-free preferred-buff resolution for hot per-tick paths.</summary>
+    internal int? ResolvePreferredEmotionBuffType(int[] candidateBuffTypes)
+    {
         int? preferredBuffType = null;
         int preferredTier = 0;
         EmotionBuffVariant preferredVariant = EmotionBuffVariant.NoTime;
 
-        foreach (int buffType in candidateBuffTypes)
+        for (int i = 0; i < candidateBuffTypes.Length; i++)
         {
+            int buffType = candidateBuffTypes[i];
+            if (buffType <= 0)
+            {
+                continue;
+            }
+
             int? tier = GetEmotionTier(buffType);
             EmotionBuffVariant? variant = GetEmotionVariant(buffType);
             if (!tier.HasValue || !variant.HasValue)

@@ -58,6 +58,11 @@ public static class PassiveAbilityRegistry
         Register((int)PassiveAbilityID.QUINTUPLE_SEEKING_PHANTOM_KNIFE, new ShootProjectilePassiveAbility(ModContent.ProjectileType<KnifeProjectileFiveSeeking>()));
     }
 
+    public static void Unload()
+    {
+        _abilities.Clear();
+    }
+
     public static void Register(int id, IItemAbility ability)
     {
         _abilities.TryAdd(id, ability);

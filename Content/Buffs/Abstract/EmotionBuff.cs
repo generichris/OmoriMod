@@ -71,12 +71,12 @@ public abstract class EmotionBuff : ModBuff, IEmotionObject
     /// <summary>Synchronizes player emotion state, scaling, visuals, and family-specific effects.</summary>
     public override void Update(Player player, ref int buffIndex)
     {
-        if (!EmotionSystem.IsPreferredEmotionBuff(player, Type))
+        var modPlayer = player.GetModPlayer<EmotionPlayer>();
+        if (!IsPreferred(modPlayer.PreferredEmotionBuffType))
         {
             return;
         }
 
-        var modPlayer = player.GetModPlayer<EmotionPlayer>();
         modPlayer.Emotion = Emotion;
         modPlayer.ActiveEmotionBuff = this;
 
@@ -88,17 +88,26 @@ public abstract class EmotionBuff : ModBuff, IEmotionObject
     /// <summary>Synchronizes NPC emotion state and family-specific effects.</summary>
     public override void Update(NPC npc, ref int buffIndex)
     {
-        if (!EmotionSystem.IsPreferredEmotionBuff(npc, Type))
+        var emotionNpc = npc.GetGlobalNPC<EmotionNPC>();
+        if (!IsPreferred(emotionNpc.PreferredEmotionBuffType))
         {
             return;
         }
 
-        var emotionNpc = npc.GetGlobalNPC<EmotionNPC>();
         emotionNpc.Emotion = Emotion;
         emotionNpc.ActiveEmotionBuff = this;
         emotionNpc.EmotionLevel = EmotionSystem.GetEmotionTier(Type) ?? EmotionTier;
 
         UpdateEmotionBuff(npc, ref buffIndex);
+    }
+
+    /// <summary>
+    /// Whether this buff is the one supplying the entity's emotion this tick, given the entity's
+    /// cached preferred buff (no cached value means nothing else competes).
+    /// </summary>
+    private bool IsPreferred(int? preferredBuffType)
+    {
+        return !preferredBuffType.HasValue || preferredBuffType.Value == Type;
     }
 
     private void UpdateEmotionLevel(EmotionPlayer modPlayer)

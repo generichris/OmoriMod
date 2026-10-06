@@ -52,18 +52,18 @@ public abstract class HappyEmotionBase : EmotionBuff
     protected HappyEmotionBase()
     {
         Emotion = EmotionType.Happy;
-        _dustColor = Color.Yellow;
+        _dustColor = EmotionColors.Get(Emotion);
     }
 
     public override void UpdateEmotionBuff(Player player, ref int buffIndex)
     {
-        EmotionSystem.RemoveIncompatibleEmotions<HappyEmotionBase>(player);
+        EmotionSystem.RemoveIncompatibleEmotions(player, this);
         ModifyPlayerMovement(player, player.GetModPlayer<EmotionPlayer>().EmotionLevel);
     }
 
     public override void UpdateEmotionBuff(NPC npc, ref int buffIndex)
     {
-        EmotionSystem.RemoveIncompatibleEmotions<HappyEmotionBase>(npc);
+        EmotionSystem.RemoveIncompatibleEmotions(npc, this);
         ModifyNpcMovement(npc, npc.GetGlobalNPC<EmotionNPC>().EmotionLevel);
     }
 

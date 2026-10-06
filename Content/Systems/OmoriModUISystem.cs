@@ -35,6 +35,11 @@ public class OmoriModUiSystem : ModSystem
         }
     }
 
+    public override void Unload()
+    {
+        ChargeBarUI.Unload();
+    }
+
     public override void UpdateUI(GameTime gameTime)
     {
         _chargeBarInterface?.Update(gameTime);

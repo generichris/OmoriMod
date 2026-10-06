@@ -73,21 +73,6 @@ public abstract class EmotionProjectile : OmoriModProjectile, IOnHitEmotionObjec
     /// </summary>
     public void MakeDust()
     {
-        switch (Emotion)
-        {
-            case EmotionType.None:
-                Dust.NewDust(Projectile.Center, 2, 2, ModContent.DustType<EmotionDust>(), 0f, 0f, 0, Color.White);
-                break;
-            case EmotionType.Sad:
-                Dust.NewDust(Projectile.Center, 2, 2, ModContent.DustType<EmotionDust>(), 0f, 0f, 0, Color.Blue);
-                break;
-            case EmotionType.Angry:
-                Dust.NewDust(Projectile.Center, 2, 2, ModContent.DustType<EmotionDust>(), 0f, 0f, 0, Color.Red);
-                break;
-            case EmotionType.Happy:
-                Dust.NewDust(Projectile.Center, 2, 2, ModContent.DustType<EmotionDust>(), 0f, 0f, 0, Color.Yellow);
-                break;
-
-        }
+        Dust.NewDust(Projectile.Center, 2, 2, ModContent.DustType<EmotionDust>(), 0f, 0f, 0, EmotionColors.Get(Emotion));
     }
 }

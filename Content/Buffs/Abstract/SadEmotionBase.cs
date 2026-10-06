@@ -48,12 +48,12 @@ public abstract class SadEmotionBase : EmotionBuff
     protected SadEmotionBase()
     {
         Emotion = EmotionType.Sad;
-        _dustColor = Color.Blue;
+        _dustColor = EmotionColors.Get(Emotion);
     }
 
     public override void UpdateEmotionBuff(Player player, ref int buffIndex)
     {
-        EmotionSystem.RemoveIncompatibleEmotions<SadEmotionBase>(player);
+        EmotionSystem.RemoveIncompatibleEmotions(player, this);
         int emotionLevel = player.GetModPlayer<EmotionPlayer>().EmotionLevel;
         ModifyPlayerDefense(player, emotionLevel);
         ModifyPlayerMovement(player, emotionLevel); // Sad also reduces speed
@@ -61,7 +61,7 @@ public abstract class SadEmotionBase : EmotionBuff
 
     public override void UpdateEmotionBuff(NPC npc, ref int buffIndex)
     {
-        EmotionSystem.RemoveIncompatibleEmotions<SadEmotionBase>(npc);
+        EmotionSystem.RemoveIncompatibleEmotions(npc, this);
         int emotionLevel = npc.GetGlobalNPC<EmotionNPC>().EmotionLevel;
         ModifyNpcDefense(npc, emotionLevel);
         ModifyNpcMovement(npc, emotionLevel);

@@ -24,6 +24,14 @@ public class ChargeBarUI : UIState
     private static Texture2D barTexture;
 
     private static Texture2D barTextureFull;
+
+    /// <summary>Releases the static texture references so they don't outlive the mod.</summary>
+    public static void Unload()
+    {
+        barTexture = null;
+        barTextureFull = null;
+    }
+
     public override void OnInitialize()
     {
         area = new UIElement();

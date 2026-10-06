@@ -315,7 +315,7 @@ public abstract class HelperMethodModProjectile : ConstructModProjectile
     protected void SlowProjectileX(float slowPercentage, float zeroThreshold = 0)
     {
 
-        if (Math.Abs(Projectile.velocity.Length()) > zeroThreshold)
+        if (Projectile.velocity.Length() > zeroThreshold)
         {
             Projectile.velocity.X *= slowPercentage;
         }
@@ -333,7 +333,7 @@ public abstract class HelperMethodModProjectile : ConstructModProjectile
     protected void SlowProjectileY(float slowPercentage, float zeroThreshold = 0)
     {
 
-        if (Math.Abs(Projectile.velocity.Length()) > zeroThreshold)
+        if (Projectile.velocity.Length() > zeroThreshold)
         {
             Projectile.velocity.Y *= slowPercentage;
         }
@@ -369,6 +369,16 @@ public abstract class HelperMethodModProjectile : ConstructModProjectile
     /// <returns></returns>
     protected NPC FindClosestNPC(float maxDetectDistance)
     {
+        return FindClosestNPCToPoint(Projectile.Center, maxDetectDistance);
+    }
+
+    /// <summary>
+    /// A helper method that finds the closest NPC to <paramref name="point"/> within <paramref name="maxDetectDistance"/>. If no NPC is found, null is returned
+    /// </summary>
+    /// <param name="point">The point to measure from.</param>
+    /// <param name="maxDetectDistance">The maximum distance that an NPC can be from the point to be returned by this algorithm.</param>
+    protected static NPC FindClosestNPCToPoint(Vector2 point, float maxDetectDistance)
+    {
         NPC closestNPC = null;
         // Using squared values in distance checks will let us skip square root calculations, drastically improving this method's speed.
         float sqrMaxDetectDistance = maxDetectDistance * maxDetectDistance;
@@ -387,7 +397,7 @@ public abstract class HelperMethodModProjectile : ConstructModProjectile
             if (target.CanBeChasedBy())
             {
                 // The DistanceSquared function returns a squared distance between 2 points, skipping relatively expensive square root calculations
-                float sqrDistanceToTarget = Vector2.DistanceSquared(target.Center, Projectile.Center);
+                float sqrDistanceToTarget = Vector2.DistanceSquared(target.Center, point);
 
                 // Check if it is within the radius
                 if (sqrDistanceToTarget < sqrMaxDetectDistance)

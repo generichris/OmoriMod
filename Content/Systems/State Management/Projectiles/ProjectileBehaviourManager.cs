@@ -64,10 +64,6 @@ public class ProjectileBehaviourManager(OmoriBehaviourProjectile projectile, int
     /// </summary>
     private TickTimer _timeBetweenBehaviours = new();
 
-    /// <summary>
-    /// Random number generator used for randomly selecting behaviours.
-    /// </summary>
-    private readonly Random _random = new();
     private readonly List<ProjectileBehaviour> _behaviourList = [];
     private readonly List<ProjectileBackgroundBehaviour> _backgroundBehaviourList = [];
     private ProjectileBehaviour _idleBehaviour;
@@ -184,6 +180,11 @@ public class ProjectileBehaviourManager(OmoriBehaviourProjectile projectile, int
         return selectedBehaviour.IsDone;
     }
 
+    // Cached so the method-group conversion doesn't allocate a delegate every tick.
+    private Action<bool> _randomSelector;
+    private Action<bool> _inOrderSelector;
+    private Action<bool> _exitStatusSelector;
+
     /// <summary>
     /// Selects a new behaviour at random from <see cref="_behaviourList"/>.
     /// </summary>
@@ -194,10 +195,10 @@ public class ProjectileBehaviourManager(OmoriBehaviourProjectile projectile, int
     /// </param>
     private void RandomSelector(bool init)
     {
-        if (init) { _selectedBehaviour ??= _behaviourList[_random.Next(_behaviourList.Count)]; }
+        if (init) { _selectedBehaviour ??= _behaviourList[Terraria.Main.rand.Next(_behaviourList.Count)]; }
         else
         {
-            SelectNewBehaviour(_random.Next(_behaviourList.Count));
+            SelectNewBehaviour(Terraria.Main.rand.Next(_behaviourList.Count));
         }
     }
 
@@ -297,7 +298,7 @@ public class ProjectileBehaviourManager(OmoriBehaviourProjectile projectile, int
     /// </summary>
     public void PerformAiViaRandomBehaviour()
     {
-        PerformAi(RandomSelector);
+        PerformAi(_randomSelector ??= RandomSelector);
     }
 
     /// <summary>
@@ -320,7 +321,7 @@ public class ProjectileBehaviourManager(OmoriBehaviourProjectile projectile, int
     /// </summary>
     public void PerformAiViaInOrderBehaviour()
     {
-        PerformAi(InOrderSelector);
+        PerformAi(_inOrderSelector ??= InOrderSelector);
     }
 
     /// <summary>
@@ -344,7 +345,7 @@ public class ProjectileBehaviourManager(OmoriBehaviourProjectile projectile, int
     /// </summary>
     public void PerformAiViaExitStatus()
     {
-        PerformAi(ExitStatusSelector);
+        PerformAi(_exitStatusSelector ??= ExitStatusSelector);
     }
 
     /// <summary>

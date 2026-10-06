@@ -278,15 +278,15 @@ public abstract class FocusItem : EmotionItem
 
     private static void DustHandler(Player player, int amtOfDust, int pOff, int SpOff, int ScOff)
     {
-        var rand = new Random();
+        var rand = Main.rand;
 
         int SpOffUse = SpOff * 2;
 
         for (int i = 0; i < amtOfDust; i++)
         {
-            float xSpeed = SpOffUse * (rand.NextSingle() - 0.5f);
-            float ySpeed = SpOffUse * (rand.NextSingle() - 0.5f);
-            float scale = ScOff * rand.NextSingle();
+            float xSpeed = SpOffUse * (rand.NextFloat() - 0.5f);
+            float ySpeed = SpOffUse * (rand.NextFloat() - 0.5f);
+            float scale = ScOff * rand.NextFloat();
 
             int xOffset = rand.Next(-pOff, pOff);
             int yOffset = rand.Next(-pOff, pOff);

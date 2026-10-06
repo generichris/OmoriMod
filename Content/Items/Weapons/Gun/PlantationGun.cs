@@ -72,7 +72,7 @@ public class PlantationGun : OmoriModItem
         Vector2 startingVelocity = velocity;
 
 
-        var rand = new Random();
+        var rand = Main.rand;
 
         var randomAngles = new HashSet<int> { 0 };
 

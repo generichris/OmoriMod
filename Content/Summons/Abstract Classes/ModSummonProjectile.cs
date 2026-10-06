@@ -185,27 +185,40 @@ public abstract class ModSummonProjectile : EmotionProjectile
 
         if (!foundTarget)
         {
+            Vector2 projectileCenter = Projectile.Center;
+            // Distance from the projectile to the current best target (targetCenter starts at the projectile's position)
+            float bestDistance = Vector2.Distance(projectileCenter, targetCenter);
+
             // This code is required either way, used for finding a target
             for (int i = 0; i < Main.maxNPCs; i++)
             {
                 NPC npc = Main.npc[i];
 
-                if (npc.CanBeChasedBy())
+                if (!npc.CanBeChasedBy())
                 {
-                    float between = Vector2.Distance(npc.Center, Projectile.Center);
-                    bool closest = Vector2.Distance(Projectile.Center, targetCenter) > between;
-                    bool inRange = between < distanceFromTarget;
-                    bool lineOfSight = Collision.CanHitLine(Projectile.position, Projectile.width, Projectile.height, npc.position, npc.width, npc.height);
-                    // Additional check for this specific minion behavior, otherwise it will stop attacking once it dashed through an enemy while flying though tiles afterwards
-                    // The number depends on various parameters seen in the movement code below. Test different ones out until it works alright
-                    bool closeThroughWall = between < 100f;
+                    continue;
+                }
 
-                    if (((closest && inRange) || !foundTarget) && (lineOfSight || closeThroughWall))
-                    {
-                        distanceFromTarget = between;
-                        targetCenter = npc.Center;
-                        foundTarget = true;
-                    }
+                float between = Vector2.Distance(npc.Center, projectileCenter);
+                bool closest = bestDistance > between;
+                bool inRange = between < distanceFromTarget;
+
+                // Cheap checks first: skip the tile raycast for anything that wouldn't be picked anyway
+                if (!((closest && inRange) || !foundTarget))
+                {
+                    continue;
+                }
+
+                // Additional check for this specific minion behavior, otherwise it will stop attacking once it dashed through an enemy while flying though tiles afterwards
+                // The number depends on various parameters seen in the movement code below. Test different ones out until it works alright
+                bool closeThroughWall = between < 100f;
+                if (closeThroughWall
+                    || Collision.CanHitLine(Projectile.position, Projectile.width, Projectile.height, npc.position, npc.width, npc.height))
+                {
+                    distanceFromTarget = between;
+                    bestDistance = between;
+                    targetCenter = npc.Center;
+                    foundTarget = true;
                 }
             }
         }

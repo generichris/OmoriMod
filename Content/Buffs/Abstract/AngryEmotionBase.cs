@@ -42,18 +42,18 @@ public abstract class AngryEmotionBase : EmotionBuff
     protected AngryEmotionBase()
     {
         Emotion = EmotionType.Angry;
-        _dustColor = Color.Red;
+        _dustColor = EmotionColors.Get(Emotion);
     }
 
     public override void UpdateEmotionBuff(Player player, ref int buffIndex)
     {
-        EmotionSystem.RemoveIncompatibleEmotions<AngryEmotionBase>(player);
+        EmotionSystem.RemoveIncompatibleEmotions(player, this);
         ModifyPlayerDefense(player, player.GetModPlayer<EmotionPlayer>().EmotionLevel);
     }
 
     public override void UpdateEmotionBuff(NPC npc, ref int buffIndex)
     {
-        EmotionSystem.RemoveIncompatibleEmotions<AngryEmotionBase>(npc);
+        EmotionSystem.RemoveIncompatibleEmotions(npc, this);
         ModifyNpcDefense(npc, npc.GetGlobalNPC<EmotionNPC>().EmotionLevel);
     }
 
