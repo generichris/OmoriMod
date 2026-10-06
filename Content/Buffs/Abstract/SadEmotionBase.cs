@@ -99,15 +99,35 @@ public abstract class SadEmotionBase : EmotionBuff
 
         modifiers.ModifyHurtInfo += (ref Player.HurtInfo hurtInfo) =>
         {
-            int requestedManaDamage = (int)MathF.Round(
-                hurtInfo.Damage * conversionPercent,
-                MidpointRounding.AwayFromZero);
-            int maximumMitigation = Math.Max(0, hurtInfo.Damage - 1);
-            int manaDamage = Math.Min(player.statMana, Math.Min(requestedManaDamage, maximumMitigation));
+            int manaDamage = CalculateManaDamage(
+                hurtInfo.Damage,
+                conversionPercent,
+                player.statMana);
 
             hurtInfo.Damage -= manaDamage;
             emotionPlayer.PendingSadManaDamage = manaDamage;
         };
+    }
+
+    internal static int CalculateManaDamage(
+        int healthDamage,
+        float conversionPercent,
+        int availableMana)
+    {
+        if (healthDamage <= 1
+            || !float.IsFinite(conversionPercent)
+            || conversionPercent <= 0f
+            || availableMana <= 0)
+        {
+            return 0;
+        }
+
+        double requestedManaDamage = Math.Round(
+            healthDamage * (double)conversionPercent,
+            MidpointRounding.AwayFromZero);
+        int maximumMitigation = healthDamage - 1;
+        int boundedManaDamage = (int)Math.Min(requestedManaDamage, maximumMitigation);
+        return Math.Min(availableMana, boundedManaDamage);
     }
 
     public override void OnPlayerHurt(Player player, int emotionLevel, Player.HurtInfo hurtInfo)

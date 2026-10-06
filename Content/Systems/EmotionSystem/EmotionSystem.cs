@@ -22,6 +22,18 @@ namespace OmoriMod.Content.Systems.EmotionSystem;
 /// </remarks>
 public static class EmotionSystem
 {
+    private static EmotionService s_service = EmotionService.Empty;
+
+    internal static void InitializeRegistry(IEmotionRegistry registry)
+    {
+        s_service = new EmotionService(registry);
+    }
+
+    internal static void ResetRegistry()
+    {
+        s_service = EmotionService.Empty;
+    }
+
     /// <summary>Gets the registered buff type for an emotion, tier, and duration variant.</summary>
     /// <returns>The buff type, or <see langword="null"/> if no matching registration exists.</returns>
     public static int? GetEmotionBuffType(
@@ -29,7 +41,7 @@ public static class EmotionSystem
         int emotionLevel,
         EmotionBuffVariant variant = EmotionBuffVariant.Standard)
     {
-        return EmotionRegistry.GetEmotionBuffType(emotion, emotionLevel, variant);
+        return s_service.GetEmotionBuffType(emotion, emotionLevel, variant);
     }
 
     /// <summary>Gets the registered buff type in a buff family for a tier and duration variant.</summary>
@@ -40,48 +52,67 @@ public static class EmotionSystem
         EmotionBuffVariant variant = EmotionBuffVariant.Standard)
         where T : EmotionBuff
     {
-        return EmotionRegistry.GetEmotionBuffType<T>(emotionLevel, variant);
+        return s_service.GetEmotionBuffType<T>(emotionLevel, variant);
     }
 
     /// <summary>Gets the next registered standard buff tier for an emotion.</summary>
     /// <returns>The next buff type, or <see langword="null"/> if it does not exist.</returns>
     public static int? GetNextTierEmotionType(EmotionType currentEmotionType, int currentEmotionLevel)
     {
-        return EmotionRegistry.GetNextTierEmotionType(currentEmotionType, currentEmotionLevel);
+        return s_service.GetNextTierEmotionType(currentEmotionType, currentEmotionLevel);
     }
 
     /// <summary>Gets the next registered standard tier in an emotion buff's family.</summary>
     /// <returns>The next buff type, or <see langword="null"/> at the final tier or when unregistered.</returns>
     public static int? GetNextTierEmotionType<T>(T currentEmotion) where T : EmotionBuff
     {
-        return EmotionRegistry.GetNextTierEmotionType(currentEmotion);
+        return s_service.GetNextTierEmotionType(currentEmotion);
     }
 
     /// <summary>Gets the registered tier of an emotion buff type.</summary>
     /// <returns>The declared tier, or <see langword="null"/> for an unregistered buff type.</returns>
     public static int? GetEmotionTier(int buffType)
     {
-        return EmotionRegistry.GetEmotionTier(buffType);
+        return s_service.GetEmotionTier(buffType);
     }
 
     /// <summary>Gets the highest registered standard tier for an emotion.</summary>
     /// <returns>The final tier, or <see langword="null"/> if the emotion has no standard buffs.</returns>
     public static int? GetMaxEmotionTier(EmotionType emotion)
     {
-        return EmotionRegistry.GetMaxEmotionTier(emotion);
+        return s_service.GetMaxEmotionTier(emotion);
     }
 
     /// <summary>Determines whether a buff type is the final registered standard tier of its emotion.</summary>
     public static bool IsFinalEmotionTier(int buffType)
     {
-        return EmotionRegistry.IsFinalEmotionTier(buffType);
+        return s_service.IsFinalEmotionTier(buffType);
     }
 
     /// <summary>Gets the registered duration variant of an emotion buff type.</summary>
     /// <returns>The variant, or <see langword="null"/> for an unregistered buff type.</returns>
     public static EmotionBuffVariant? GetEmotionVariant(int buffType)
     {
-        return EmotionRegistry.GetEmotionVariant(buffType);
+        return s_service.GetEmotionVariant(buffType);
+    }
+
+    internal static bool IsValidScalingSync(
+        EmotionType incomingEmotion,
+        int incomingLevel,
+        EmotionType currentEmotion,
+        int currentLevel,
+        int? activeBuffType,
+        EmotionScalingMode activeScalingMode,
+        bool requireActiveBuff)
+    {
+        return s_service.IsValidScalingSync(
+            incomingEmotion,
+            incomingLevel,
+            currentEmotion,
+            currentLevel,
+            activeBuffType,
+            activeScalingMode,
+            requireActiveBuff);
     }
 
     /// <summary>
@@ -106,16 +137,19 @@ public static class EmotionSystem
     /// <returns>The active emotion buff type, or <see langword="null"/> when none is present.</returns>
     public static int? GetEmotionType(Entity entity)
     {
-        int[] buffs = GetBuffListOfEntity(entity);
-        foreach (int buffId in buffs)
-        {
-            if (ModContent.GetModBuff(buffId) is EmotionBuff currentBuff)
-            {
-                return currentBuff.Type;
-            }
-        }
-        return null;
+        return s_service.GetPreferredEmotionBuffType(GetBuffListOfEntity(entity));
     }
+
+    /// <summary>
+    /// Determines whether a buff is the registered emotion that should supply an entity's
+    /// resolved state and effects for the current tick.
+    /// </summary>
+    internal static bool IsPreferredEmotionBuff(Entity entity, int buffType)
+    {
+        int? preferredBuffType = GetEmotionType(entity);
+        return !preferredBuffType.HasValue || preferredBuffType.Value == buffType;
+    }
+
     /// <summary>Gets the stat-scaling level currently resolved for an emotion-aware entity.</summary>
     public static int GetEmotionLevel(IEmotionEntity entity)
     {
@@ -127,27 +161,7 @@ public static class EmotionSystem
     /// </summary>
     public static int GetEmotionTier(IEmotionEntity entity)
     {
-        EmotionBuff activeEmotion = entity.ActiveEmotionBuff;
-        return activeEmotion == null
-            ? 0
-            : GetEmotionTier(activeEmotion.Type) ?? activeEmotion.EmotionTier;
-    }
-
-    /// <summary>
-    /// Determines which side wins the Angry-Happy-Sad advantage triangle.
-    /// </summary>
-    private static bool? CheckForAdvantage(EmotionType attacker, EmotionType defender)
-    {
-        return attacker switch
-        {
-            EmotionType.Sad when defender == EmotionType.Happy => true,
-            EmotionType.Sad when defender == EmotionType.Angry => false,
-            EmotionType.Angry when defender == EmotionType.Sad => true,
-            EmotionType.Angry when defender == EmotionType.Happy => false,
-            EmotionType.Happy when defender == EmotionType.Angry => true,
-            EmotionType.Happy when defender == EmotionType.Sad => false,
-            _ => null
-        };
+        return s_service.GetEmotionTier(entity);
     }
 
     /// <summary>
@@ -162,17 +176,7 @@ public static class EmotionSystem
     /// </returns>
     public static int CalculateAdvantage(IEmotionEntity attacker, IEmotionEntity defender)
     {
-        bool? attackerAdvantage = CheckForAdvantage(attacker.Emotion, defender.Emotion);
-
-        if (!attackerAdvantage.HasValue)
-        {
-            return 0;
-        }
-
-        // The emotion triangle always determines who wins. Tier distance only
-        // determines the strength of that win, never reverses its direction.
-        int advantageMagnitude = Math.Abs(GetEmotionTier(attacker) - GetEmotionTier(defender)) + 1;
-        return attackerAdvantage.Value ? advantageMagnitude : -advantageMagnitude;
+        return s_service.CalculateAdvantage(attacker, defender);
     }
 
     private static void ApplyAdvantage(int advantage, ref NPC.HitModifiers modifiers)
@@ -262,13 +266,11 @@ public static class EmotionSystem
     /// <param name="entity">The player or NPC whose emotions should be cleared.</param>
     public static void ClearAllEmotions(Entity entity)
     {
-        int[] buffs = GetBuffListOfEntity(entity);
-        foreach (int buffId in buffs)
+        IReadOnlyList<int> buffsToRemove =
+            s_service.GetRegisteredEmotionBuffTypes(GetBuffListOfEntity(entity));
+        foreach (int buffId in buffsToRemove)
         {
-            if (ModContent.GetModBuff(buffId) is EmotionBuff)
-            {
-                RemoveEmotion(entity, buffId);
-            }
+            RemoveEmotion(entity, buffId);
         }
     }
 
@@ -369,74 +371,93 @@ public static class EmotionSystem
             return false;
         }
 
+        T currentEmotion = GetCurrentEmotion<T>(player);
+        return GetApplicationDecision(
+            player,
+            EmotionApplicationRequest.RegularItem,
+            typeof(T),
+            currentEmotion).CanApply;
+    }
+
+    private static T GetCurrentEmotion<T>(Player player) where T : EmotionBuff
+    {
+        List<int> candidateBuffTypes = [];
         foreach (int buffId in player.buffType)
         {
-            if (ModContent.GetModBuff(buffId) is T currentEmotion)
+            if (ModContent.GetModBuff(buffId) is T)
             {
-                return GetEmotionVariant(buffId) == EmotionBuffVariant.Standard
-                    && !IsCappedFinalTierEmotion(currentEmotion);
+                candidateBuffTypes.Add(buffId);
             }
         }
 
-        return GetEmotionBuffType<T>(1).HasValue;
+        int? preferredBuffType = s_service.GetPreferredEmotionBuffType(candidateBuffTypes);
+        return preferredBuffType.HasValue
+            ? ModContent.GetModBuff(preferredBuffType.Value) as T
+            : null;
     }
 
-    /// <summary>
-    /// Determines whether a buff is the final standard tier of a family that supports capped scaling.
-    /// </summary>
-    private static bool IsCappedFinalTierEmotion(EmotionBuff emotionBuff)
+    private static EmotionApplicationDecision GetApplicationDecision(
+        Player player,
+        EmotionApplicationRequest request,
+        Type emotionFamilyType,
+        EmotionBuff currentEmotion)
     {
-        return emotionBuff.ScalingMode == EmotionScalingMode.Capped
-            && IsFinalEmotionTier(emotionBuff.Type);
-    }
-
-
-    /// <summary>
-    /// Determines whether a registered buff belongs to a promotable standard emotion progression.
-    /// </summary>
-    /// <param name="buffType">The tModLoader buff type being checked.</param>
-    /// <param name="currentTier">The buff's registered tier.</param>
-    /// <param name="maxTier">The highest registered standard tier for its emotion.</param>
-    private static bool IsPromotableEmotion(int buffType, int? currentTier, int? maxTier)
-    {
-        return currentTier.HasValue
-            && maxTier.HasValue
-            && GetEmotionVariant(buffType) == EmotionBuffVariant.Standard;
-    }
-
-    private static bool PromoteEmotion(EmotionBuff currentEmotion, Player player, int duration, bool canPromoteToFinalTier)
-    {
-        int? currentTier = GetEmotionTier(currentEmotion.Type);
-        int? maxTier = GetMaxEmotionTier(currentEmotion.Emotion);
-
-        if (currentTier == null || maxTier == null) { return false; }
-        if (!IsPromotableEmotion(currentEmotion.Type, currentTier, maxTier)) { return false; }
-
-        if (currentTier.Value == maxTier.Value)
+        int scalingLevel = 0;
+        EmotionScalingMode scalingMode = EmotionScalingMode.Capped;
+        if (currentEmotion != null)
         {
-            if (IsCappedFinalTierEmotion(currentEmotion) && !canPromoteToFinalTier)
-            {
+            EmotionPlayer emotionPlayer = player.GetModPlayer<EmotionPlayer>();
+            int registeredTier = GetEmotionTier(currentEmotion.Type) ?? currentEmotion.EmotionTier;
+            scalingLevel = emotionPlayer.ScalingEmotion == currentEmotion.Emotion
+                ? emotionPlayer.ScalingEmotionLevel
+                : registeredTier;
+            scalingMode = currentEmotion.ScalingMode;
+        }
+
+        return s_service.GetApplicationDecision(
+            request,
+            emotionFamilyType,
+            currentEmotion?.Type,
+            scalingMode,
+            scalingLevel);
+    }
+
+    private static bool ExecuteApplicationDecision(
+        Player player,
+        EmotionBuff currentEmotion,
+        EmotionApplicationDecision decision,
+        int duration)
+    {
+        if (!decision.CanApply || !decision.BuffType.HasValue)
+        {
+            return false;
+        }
+
+        switch (decision.Action)
+        {
+            case EmotionApplicationAction.ApplyTierOne:
+            case EmotionApplicationAction.RefreshCurrent:
+                player.AddBuff(decision.BuffType.Value, duration);
+                return true;
+            case EmotionApplicationAction.PromoteNextTier when currentEmotion != null:
+                player.ClearBuff(currentEmotion.Type);
+                player.AddBuff(decision.BuffType.Value, duration);
+                return true;
+            case EmotionApplicationAction.AmplifyCurrent when currentEmotion != null:
+                int? finalTier = GetMaxEmotionTier(currentEmotion.Emotion);
+                if (!finalTier.HasValue)
+                {
+                    return false;
+                }
+
+                player.GetModPlayer<EmotionPlayer>().TryAmplifyEmotion(
+                    currentEmotion.Emotion,
+                    finalTier.Value);
+                player.AddBuff(decision.BuffType.Value, duration);
+                return true;
+            default:
                 return false;
-            }
-
-            player.AddBuff(currentEmotion.Type, duration);
-            return true;
         }
-
-        bool isTierBeforeFinal = currentTier.Value == maxTier.Value - 1;
-        if (isTierBeforeFinal && !canPromoteToFinalTier)
-        {
-            player.AddBuff(currentEmotion.Type, duration);
-            return true;
-        }
-
-        int? nextEmotionType = GetNextTierEmotionType(currentEmotion);
-        if (!nextEmotionType.HasValue) { return false; }
-
-        player.ClearBuff(currentEmotion.Type);
-        player.AddBuff(nextEmotionType.Value, duration);
-        return true;
-
     }
 
     /// <summary>
@@ -451,13 +472,12 @@ public static class EmotionSystem
             return false;
         }
 
-        int? currentTier = GetEmotionTier(buffType.Value);
-        int? maxTier = GetMaxEmotionTier(emotionBuff.Emotion);
-        return GetEmotionVariant(buffType.Value) == EmotionBuffVariant.Standard
-            && currentTier.HasValue
-            && maxTier.HasValue
-            && currentTier.Value >= maxTier.Value - 1
-            && CanApplyEmotion(player, emotionBuff);
+        EmotionApplicationDecision decision = GetApplicationDecision(
+            player,
+            EmotionApplicationRequest.Amplifier,
+            emotionBuff.GetType(),
+            emotionBuff);
+        return decision.CanApply && CanApplyEmotion(player, emotionBuff);
     }
 
     /// <summary>
@@ -465,15 +485,26 @@ public static class EmotionSystem
     /// </summary>
     public static bool ApplyFinalTierEmotion(Player player, int duration)
     {
-        if (!CanApplyFinalTierEmotion(player))
+        int? buffType = GetEmotionType(player);
+        if (!buffType.HasValue
+            || ModContent.GetModBuff(buffType.Value) is not EmotionBuff currentEmotion
+            || !CanApplyEmotion(player, currentEmotion))
         {
             return false;
         }
 
-        int buffType = GetEmotionType(player).Value;
-        EmotionBuff currentEmotion = (EmotionBuff)ModContent.GetModBuff(buffType);
+        EmotionApplicationDecision decision = GetApplicationDecision(
+            player,
+            EmotionApplicationRequest.Amplifier,
+            currentEmotion.GetType(),
+            currentEmotion);
+        if (!decision.CanApply)
+        {
+            return false;
+        }
+
         RemoveIncompatibleEmotions(player, currentEmotion);
-        return PromoteEmotion(currentEmotion, player, duration, canPromoteToFinalTier: true);
+        return ExecuteApplicationDecision(player, currentEmotion, decision, duration);
     }
 
     /// <summary>
@@ -489,37 +520,21 @@ public static class EmotionSystem
     /// <returns><see langword="true"/> when an emotion was applied, promoted, or refreshed.</returns>
     public static bool ApplyOrPromoteEmotion<T>(Player player, int duration, bool canPromoteToFinalTier = false) where T : EmotionBuff
     {
-        if (!canPromoteToFinalTier)
+        T currentEmotion = GetCurrentEmotion<T>(player);
+        EmotionApplicationRequest request = canPromoteToFinalTier
+            ? EmotionApplicationRequest.Amplifier
+            : EmotionApplicationRequest.RegularItem;
+        EmotionApplicationDecision decision = GetApplicationDecision(
+            player,
+            request,
+            typeof(T),
+            currentEmotion);
+        if (!decision.CanApply)
         {
-            foreach (int buffId in player.buffType)
-            {
-                if (ModContent.GetModBuff(buffId) is T currentEmotion
-                    && IsCappedFinalTierEmotion(currentEmotion))
-                {
-                    return false;
-                }
-            }
+            return false;
         }
 
-        // first, remove incompatible emotions
         RemoveIncompatibleEmotions<T>(player);
-
-        // next, check if the player has a promotable emotion
-        foreach (int buffId in player.buffType)
-        {
-            if (ModContent.GetModBuff(buffId) is T currentEmotion)
-            {
-                // Non-standard variants such as accessory emotions cannot be promoted.
-                return GetEmotionVariant(buffId) == EmotionBuffVariant.Standard && PromoteEmotion(currentEmotion, player, duration, canPromoteToFinalTier);
-            }
-        }
-
-        // promotable emotion not found, apply tier 1 version of emotion
-        int? buffType = GetEmotionBuffType<T>(1);
-        if (!buffType.HasValue) { return false; }
-
-        player.AddBuff(buffType.Value, duration);
-        return true;
-
+        return ExecuteApplicationDecision(player, currentEmotion, decision, duration);
     }
 }

@@ -17,26 +17,32 @@ namespace OmoriMod.Content.Systems.EmotionSystem;
 /// remain contiguous, use one scaling policy, and not exceed the configured player tier limit.
 /// No-time variants are registered for lookup but do not define standard-family policy or limits.
 /// </remarks>
-public sealed class EmotionRegistry : ModSystem
+public sealed class EmotionRegistry : ModSystem, IEmotionRegistry
 {
     private readonly record struct EmotionLookupKey(EmotionType Emotion, int Tier, EmotionBuffVariant Variant);
     private readonly record struct EmotionFamilyLookupKey(Type FamilyType, int Tier, EmotionBuffVariant Variant);
     private readonly record struct EmotionBuffMetadata(EmotionType Emotion, int Tier, EmotionBuffVariant Variant);
     private readonly record struct EmotionScalingRegistration(EmotionScalingMode Mode, int BuffType);
 
-    private static readonly Dictionary<EmotionLookupKey, int> EmotionBuffTypes = [];
-    private static readonly Dictionary<EmotionFamilyLookupKey, int> EmotionBuffTypesByFamily = [];
-    private static readonly Dictionary<int, EmotionBuffMetadata> EmotionMetadataByBuffType = [];
-    private static readonly Dictionary<EmotionType, int> MaxEmotionTierByType = [];
-    private static readonly Dictionary<EmotionType, EmotionScalingRegistration> StandardScalingByType = [];
+    private readonly Dictionary<EmotionLookupKey, int> _emotionBuffTypes = [];
+    private readonly Dictionary<EmotionFamilyLookupKey, int> _emotionBuffTypesByFamily = [];
+    private readonly Dictionary<int, EmotionBuffMetadata> _emotionMetadataByBuffType = [];
+    private readonly Dictionary<EmotionType, int> _maxEmotionTierByType = [];
+    private readonly Dictionary<EmotionType, EmotionScalingRegistration> _standardScalingByType = [];
 
-    private static void ClearRegistries()
+    /// <summary>Connects the gameplay facade to this registry instance.</summary>
+    public override void Load()
     {
-        EmotionBuffTypes.Clear();
-        EmotionBuffTypesByFamily.Clear();
-        EmotionMetadataByBuffType.Clear();
-        MaxEmotionTierByType.Clear();
-        StandardScalingByType.Clear();
+        EmotionSystem.InitializeRegistry(this);
+    }
+
+    private void ClearRegistries()
+    {
+        _emotionBuffTypes.Clear();
+        _emotionBuffTypesByFamily.Clear();
+        _emotionMetadataByBuffType.Clear();
+        _maxEmotionTierByType.Clear();
+        _standardScalingByType.Clear();
     }
 
     private static void AddUniqueRegistration<TKey>(Dictionary<TKey, int> registry, TKey key, EmotionBuff emotionBuff)
@@ -53,10 +59,10 @@ public sealed class EmotionRegistry : ModSystem
         registry.Add(key, emotionBuff.Type);
     }
 
-    private static void RegisterEmotionBuff(EmotionBuff emotionBuff, EmotionBuffMetadata metadata)
+    private void RegisterEmotionBuff(EmotionBuff emotionBuff, EmotionBuffMetadata metadata)
     {
         EmotionLookupKey emotionKey = new(metadata.Emotion, metadata.Tier, metadata.Variant);
-        AddUniqueRegistration(EmotionBuffTypes, emotionKey, emotionBuff);
+        AddUniqueRegistration(_emotionBuffTypes, emotionKey, emotionBuff);
 
         Type familyType = emotionBuff.GetType();
         while (familyType != null
@@ -64,7 +70,7 @@ public sealed class EmotionRegistry : ModSystem
             && typeof(EmotionBuff).IsAssignableFrom(familyType))
         {
             EmotionFamilyLookupKey familyKey = new(familyType, metadata.Tier, metadata.Variant);
-            AddUniqueRegistration(EmotionBuffTypesByFamily, familyKey, emotionBuff);
+            AddUniqueRegistration(_emotionBuffTypesByFamily, familyKey, emotionBuff);
             familyType = familyType.BaseType;
         }
     }
@@ -96,7 +102,7 @@ public sealed class EmotionRegistry : ModSystem
             EmotionBuffMetadata metadata = new(emotionBuff.Emotion, tier, variant);
 
             RegisterEmotionBuff(emotionBuff, metadata);
-            EmotionMetadataByBuffType.Add(buffType, metadata);
+            _emotionMetadataByBuffType.Add(buffType, metadata);
 
             if (variant != EmotionBuffVariant.Standard)
             {
@@ -105,20 +111,20 @@ public sealed class EmotionRegistry : ModSystem
 
             ValidateStandardScalingMode(emotionBuff);
 
-            if (!MaxEmotionTierByType.TryGetValue(emotionBuff.Emotion, out int currentMax) || tier > currentMax)
+            if (!_maxEmotionTierByType.TryGetValue(emotionBuff.Emotion, out int currentMax) || tier > currentMax)
             {
-                MaxEmotionTierByType[emotionBuff.Emotion] = tier;
+                _maxEmotionTierByType[emotionBuff.Emotion] = tier;
             }
         }
 
         ValidateStandardEmotionTiers();
     }
 
-    private static void ValidateStandardScalingMode(EmotionBuff emotionBuff)
+    private void ValidateStandardScalingMode(EmotionBuff emotionBuff)
     {
-        if (!StandardScalingByType.TryGetValue(emotionBuff.Emotion, out EmotionScalingRegistration existing))
+        if (!_standardScalingByType.TryGetValue(emotionBuff.Emotion, out EmotionScalingRegistration existing))
         {
-            StandardScalingByType.Add(
+            _standardScalingByType.Add(
                 emotionBuff.Emotion,
                 new EmotionScalingRegistration(emotionBuff.ScalingMode, emotionBuff.Type));
             return;
@@ -141,11 +147,12 @@ public sealed class EmotionRegistry : ModSystem
     public override void Unload()
     {
         ClearRegistries();
+        EmotionSystem.ResetRegistry();
     }
 
-    private static void ValidateStandardEmotionTiers()
+    private void ValidateStandardEmotionTiers()
     {
-        foreach ((EmotionType emotion, int maxTier) in MaxEmotionTierByType)
+        foreach ((EmotionType emotion, int maxTier) in _maxEmotionTierByType)
         {
             if (maxTier > EmotionStatTuning.PlayerMaxEmotionLevel)
             {
@@ -156,7 +163,7 @@ public sealed class EmotionRegistry : ModSystem
             for (int tier = 1; tier <= maxTier; tier++)
             {
                 EmotionLookupKey key = new(emotion, tier, EmotionBuffVariant.Standard);
-                if (!EmotionBuffTypes.ContainsKey(key))
+                if (!_emotionBuffTypes.ContainsKey(key))
                 {
                     throw new InvalidOperationException(
                         $"Emotion '{emotion}' is missing standard tier {tier}. Standard emotion tiers must be contiguous from 1 through {maxTier}.");
@@ -165,77 +172,54 @@ public sealed class EmotionRegistry : ModSystem
         }
     }
 
-    /// <summary>
-    /// Gets the registered buff type for an emotion, tier, and variant.
-    /// </summary>
-    /// <returns>The tModLoader buff type, or <see langword="null"/> when no match is registered.</returns>
-    internal static int? GetEmotionBuffType(
+    int? IEmotionRegistry.GetEmotionBuffType(
         EmotionType emotion,
         int emotionLevel,
-        EmotionBuffVariant variant = EmotionBuffVariant.Standard)
+        EmotionBuffVariant variant)
     {
         EmotionLookupKey key = new(emotion, emotionLevel, variant);
-        return EmotionBuffTypes.TryGetValue(key, out int buffType) ? buffType : null;
+        return _emotionBuffTypes.TryGetValue(key, out int buffType) ? buffType : null;
     }
 
-    /// <summary>
-    /// Gets the registered buff type belonging to the requested emotion-buff family, tier, and variant.
-    /// </summary>
-    /// <typeparam name="T">The concrete or base <see cref="EmotionBuff"/> family to search.</typeparam>
-    /// <returns>The tModLoader buff type, or <see langword="null"/> when no match is registered.</returns>
-    internal static int? GetEmotionBuffType<T>(
+    int? IEmotionRegistry.GetEmotionBuffType(
+        Type familyType,
         int emotionLevel,
-        EmotionBuffVariant variant = EmotionBuffVariant.Standard)
-        where T : EmotionBuff
+        EmotionBuffVariant variant)
     {
-        EmotionFamilyLookupKey key = new(typeof(T), emotionLevel, variant);
-        return EmotionBuffTypesByFamily.TryGetValue(key, out int buffType) ? buffType : null;
+        EmotionFamilyLookupKey key = new(familyType, emotionLevel, variant);
+        return _emotionBuffTypesByFamily.TryGetValue(key, out int buffType) ? buffType : null;
     }
 
-    /// <summary>Gets the next standard tier for an emotion.</summary>
-    /// <returns>The next buff type, or <see langword="null"/> if it is not registered.</returns>
-    internal static int? GetNextTierEmotionType(EmotionType currentEmotionType, int currentEmotionLevel)
+    EmotionType? IEmotionRegistry.GetEmotion(int buffType)
     {
-        return GetEmotionBuffType(currentEmotionType, currentEmotionLevel + 1);
+        return _emotionMetadataByBuffType.TryGetValue(buffType, out EmotionBuffMetadata metadata)
+            ? metadata.Emotion
+            : null;
     }
 
-    /// <summary>Gets the next standard tier in the supplied buff's registered family.</summary>
-    /// <returns>The next buff type, or <see langword="null"/> at the final tier or for unregistered buffs.</returns>
-    internal static int? GetNextTierEmotionType<T>(T currentEmotion) where T : EmotionBuff
+    int? IEmotionRegistry.GetEmotionTier(int buffType)
     {
-        return !EmotionMetadataByBuffType.TryGetValue(currentEmotion.Type, out EmotionBuffMetadata metadata)
-            || IsFinalEmotionTier(currentEmotion.Type)
-            ? null
-            : GetEmotionBuffType(metadata.Emotion, metadata.Tier + 1);
-    }
-
-    /// <summary>Gets the tier declared by a registered emotion buff type.</summary>
-    internal static int? GetEmotionTier(int buffType)
-    {
-        return EmotionMetadataByBuffType.TryGetValue(buffType, out EmotionBuffMetadata metadata)
+        return _emotionMetadataByBuffType.TryGetValue(buffType, out EmotionBuffMetadata metadata)
             ? metadata.Tier
             : null;
     }
 
-    /// <summary>Gets the highest registered standard tier for an emotion.</summary>
-    internal static int? GetMaxEmotionTier(EmotionType emotion)
+    int? IEmotionRegistry.GetMaxEmotionTier(EmotionType emotion)
     {
-        return MaxEmotionTierByType.TryGetValue(emotion, out int maxTier) ? maxTier : null;
+        return _maxEmotionTierByType.TryGetValue(emotion, out int maxTier) ? maxTier : null;
     }
 
-    /// <summary>Determines whether a buff type is the final registered standard tier of its emotion.</summary>
-    internal static bool IsFinalEmotionTier(int buffType)
+    bool IEmotionRegistry.IsFinalEmotionTier(int buffType)
     {
-        return EmotionMetadataByBuffType.TryGetValue(buffType, out EmotionBuffMetadata metadata)
+        return _emotionMetadataByBuffType.TryGetValue(buffType, out EmotionBuffMetadata metadata)
             && metadata.Variant == EmotionBuffVariant.Standard
-            && MaxEmotionTierByType.TryGetValue(metadata.Emotion, out int maxTier)
+            && _maxEmotionTierByType.TryGetValue(metadata.Emotion, out int maxTier)
             && metadata.Tier == maxTier;
     }
 
-    /// <summary>Gets the registered duration variant of an emotion buff type.</summary>
-    internal static EmotionBuffVariant? GetEmotionVariant(int buffType)
+    EmotionBuffVariant? IEmotionRegistry.GetEmotionVariant(int buffType)
     {
-        return EmotionMetadataByBuffType.TryGetValue(buffType, out EmotionBuffMetadata metadata)
+        return _emotionMetadataByBuffType.TryGetValue(buffType, out EmotionBuffMetadata metadata)
             ? metadata.Variant
             : null;
     }

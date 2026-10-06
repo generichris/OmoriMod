@@ -49,7 +49,7 @@ public abstract class EmotionBuff : ModBuff, IEmotionObject
     /// <summary>
     /// The number of emotion-dust particles spawned per second while this buff is active on a player.
     /// </summary>
-    protected int _dustSpawnFrequency;
+    protected int _dustSpawnFrequency = 1;
 
     /// <summary>
     /// Determines whether this buff cannot coexist with another emotion buff.
@@ -71,6 +71,11 @@ public abstract class EmotionBuff : ModBuff, IEmotionObject
     /// <summary>Synchronizes player emotion state, scaling, visuals, and family-specific effects.</summary>
     public override void Update(Player player, ref int buffIndex)
     {
+        if (!EmotionSystem.IsPreferredEmotionBuff(player, Type))
+        {
+            return;
+        }
+
         var modPlayer = player.GetModPlayer<EmotionPlayer>();
         modPlayer.Emotion = Emotion;
         modPlayer.ActiveEmotionBuff = this;
@@ -83,6 +88,11 @@ public abstract class EmotionBuff : ModBuff, IEmotionObject
     /// <summary>Synchronizes NPC emotion state and family-specific effects.</summary>
     public override void Update(NPC npc, ref int buffIndex)
     {
+        if (!EmotionSystem.IsPreferredEmotionBuff(npc, Type))
+        {
+            return;
+        }
+
         var emotionNpc = npc.GetGlobalNPC<EmotionNPC>();
         emotionNpc.Emotion = Emotion;
         emotionNpc.ActiveEmotionBuff = this;
@@ -109,43 +119,6 @@ public abstract class EmotionBuff : ModBuff, IEmotionObject
 
         modPlayer.EnsureScalingEmotion(Emotion, finalTier.Value);
         modPlayer.EmotionLevel = modPlayer.ScalingEmotionLevel;
-    }
-
-    /// <summary>
-    /// Applies the family's scaling policy when a player's final standard tier is reapplied.
-    /// </summary>
-    /// <remarks>
-    /// Capped families increment their retained scaling level up to the configured maximum.
-    /// Disabled families leave their effective level fixed. Both policies allow tModLoader's
-    /// normal duration refresh behavior, while non-final tiers use the base implementation.
-    /// </remarks>
-    public override bool ReApply(Player player, int time, int buffIndex)
-    {
-        if (!EmotionSystem.IsFinalEmotionTier(Type))
-        {
-            return base.ReApply(player, time, buffIndex);
-        }
-
-        if (ScalingMode == EmotionScalingMode.Disabled)
-        {
-            return false;
-        }
-
-        int? finalTier = EmotionSystem.GetMaxEmotionTier(Emotion);
-        if (!finalTier.HasValue)
-        {
-            return base.ReApply(player, time, buffIndex);
-        }
-
-        EmotionPlayer modPlayer = player.GetModPlayer<EmotionPlayer>();
-        modPlayer.EnsureScalingEmotion(Emotion, finalTier.Value);
-        if (modPlayer.ScalingEmotionLevel < EmotionStatTuning.PlayerMaxEmotionLevel)
-        {
-            modPlayer.ScalingEmotionLevel++;
-        }
-        modPlayer.EmotionLevel = modPlayer.ScalingEmotionLevel;
-
-        return false;
     }
 
     /// <summary>Applies this emotion's defense effect to a player.</summary>
@@ -207,23 +180,28 @@ public abstract class EmotionBuff : ModBuff, IEmotionObject
     /// <returns>The scaled value as a decimal multiplier.</returns>
     protected static float LinearPerLevel(int emotionLevel, float max, float rate, int maxEmotionLevel, float startingValue = 0f, int rateChange = 3)
     {
+        int boundedMaximumLevel = Math.Max(0, maxEmotionLevel);
+        int boundedEmotionLevel = Math.Clamp(emotionLevel, 0, boundedMaximumLevel);
+        int boundedRateChange = Math.Clamp(rateChange, 0, boundedMaximumLevel);
         float result;
 
-        if (emotionLevel <= rateChange)
+        if (boundedEmotionLevel <= boundedRateChange
+            || boundedRateChange == boundedMaximumLevel)
         {
             // Phase 1: simple linear
-            result = emotionLevel * rate;
+            result = boundedEmotionLevel * rate;
         }
         else
         {
             // Phase 2: linear interpolation to max
-            float initialValue = rateChange * rate;
-            float t = (emotionLevel - rateChange) / (float)(maxEmotionLevel - rateChange);
+            float initialValue = boundedRateChange * rate;
+            float t = (boundedEmotionLevel - boundedRateChange)
+                / (float)(boundedMaximumLevel - boundedRateChange);
             result = MathHelper.Lerp(initialValue, max, t);
         }
 
         result += startingValue;
-        return Math.Min(result, max) / 100f;
+        return Math.Clamp(result, 0f, max) / 100f;
     }
 
     /// <summary>Calculates a two-phase percentage curve from an <see cref="EmotionStatScaling"/> definition.</summary>
