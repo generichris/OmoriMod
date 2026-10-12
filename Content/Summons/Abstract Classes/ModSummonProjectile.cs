@@ -73,7 +73,7 @@ public abstract class ModSummonProjectile : EmotionProjectile
     /// </summary>
     /// <param name="owner"></param>
     /// <returns></returns>
-    public bool CheckActive(Player owner)
+    public virtual bool CheckActive(Player owner)
     {
         if (owner.dead || !owner.active)
         {

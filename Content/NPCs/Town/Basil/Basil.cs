@@ -128,7 +128,6 @@ namespace OmoriMod.Content.NPCs.Town.Basil
             npcShop.Add<Content.Items.Accessories.Flower>();
             npcShop.Add<Content.Items.Accessories.DeadFlower>();
             npcShop.Add<Content.Items.Accessories.BloodyFlower>();
-            npcShop.Add<Content.Items.Accessories.RabbitsFoot>();
 
             npcShop.Add<Content.Items.BuffItems.PartyPopper>();
             npcShop.Add<Content.Items.BuffItems.RainCloud>();
@@ -138,12 +137,9 @@ namespace OmoriMod.Content.NPCs.Town.Basil
 
             npcShop.Add<Content.Items.Health.Sweets>();
             npcShop.Add<Content.Items.Health.Tofu>();
-            npcShop.Add<Content.Items.Mana.AppleJuice>();
-            npcShop.Add<Content.Items.Mana.OrangeJuice>();
             npcShop.Add<Content.Items.FocusItems.BrainFocus>();
 
             npcShop.Add<Content.Summons.Pets.Items.Something>();
-            npcShop.Add<Content.Summons.Summons.Items.GShroober>();
             npcShop.Add<Content.Summons.Summons.Items.SentientKnife>();
 
             npcShop.Register();

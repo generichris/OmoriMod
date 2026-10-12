@@ -19,10 +19,10 @@ namespace OmoriMod.Content.Items.Accessories
 
         public override void UpdateAccessory(Player player, bool hideVisual)
         {
-            player.jumpSpeedBoost += 3.0f; //Frog Leg is 2.4f so this is fine prob if i could test but noooooooooooooooooooo i cant bumb error vro
+            player.jumpSpeedBoost += 3.0f;
             player.autoJump = true;
 
-            player.moveSpeed += 0.50f;
+            player.moveSpeed += 0.02f;
         }
 
     }

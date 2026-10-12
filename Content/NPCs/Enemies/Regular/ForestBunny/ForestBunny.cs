@@ -17,8 +17,7 @@ namespace OmoriMod.Content.NPCs.Enemies.Regular.ForestBunny
 {
     public class ForestBunny : OmoriBehaviourNPC
     {
-        int frameIndex = 0;
-        int jumpTimer = 0;
+        private ref float JumpTimer => ref NPC.ai[0];
 
         public override void SetStaticDefaults()
         {
@@ -31,13 +30,10 @@ namespace OmoriMod.Content.NPCs.Enemies.Regular.ForestBunny
             NPC.height = 16;
             NPC.scale = 2f;
             NPC.lifeMax = 20;
-
             NPC.damage = 6;
             NPC.defense = 4;
-
             NPC.HitSound = SoundID.NPCHit7;
             NPC.DeathSound = SoundID.NPCDeath9;
-
             NPC.value = 10f;
             NPC.knockBackResist = 0.8f;
             NPC.netUpdate = true;
@@ -76,10 +72,10 @@ namespace OmoriMod.Content.NPCs.Enemies.Regular.ForestBunny
                     NPC.velocity.X = 0f;
                 }
 
-                jumpTimer++;
-                if (jumpTimer >= 240)
+                JumpTimer++;
+                if (JumpTimer >= 240)
                 {
-                    jumpTimer = 0;
+                    JumpTimer = 0;
                     NPC.velocity.Y = -8.5f;
                     NPC.velocity.X = 4.5f * NPC.direction;
                     NPC.netUpdate = true;
@@ -94,7 +90,6 @@ namespace OmoriMod.Content.NPCs.Enemies.Regular.ForestBunny
             {
                 NPC.frameCounter = 0;
                 NPC.frame.Y += frameHeight;
-
                 if (NPC.frame.Y >= frameHeight * Main.npcFrameCount[NPC.type])
                 {
                     NPC.frame.Y = 0;

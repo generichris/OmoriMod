@@ -29,8 +29,11 @@ namespace OmoriMod.Content.Summons.Summons.Projectiles
         /// <summary>Number of animation frames in this goober's sprite sheet.</summary>
         protected abstract int FrameCount { get; }
 
-        /// <summary>Width and height of the hitbox.</summary>
-        protected virtual int HitboxSize => 20;
+        /// <summary>Hitbox width.</summary>
+        protected abstract int HitboxWidth { get; }
+
+        /// <summary>Hitbox height.</summary>
+        protected abstract int HitboxHeight { get; }
 
         /// <summary>The buff that keeps this goober alive.</summary>
         protected abstract int BuffType { get; }
@@ -46,8 +49,8 @@ namespace OmoriMod.Content.Summons.Summons.Projectiles
 
         public sealed override void SetDefaults()
         {
-            Projectile.width = HitboxSize;
-            Projectile.height = HitboxSize;
+            Projectile.width = HitboxWidth;
+            Projectile.height = HitboxHeight;
             Projectile.tileCollide = false;
             Projectile.scale = 2f;
 
@@ -59,7 +62,7 @@ namespace OmoriMod.Content.Summons.Summons.Projectiles
             Projectile.DamageType = DamageClass.Summon;
         }
 
-        private bool CheckActive(Player owner)
+        public override bool CheckActive(Player owner)
         {
             if (owner.dead || !owner.active)
             {

@@ -56,6 +56,14 @@ public abstract class FearEmotionBase : EmotionBuff
         EmotionStatTuning.Fear.PlayerStats.LifeRegenIncrease,
         EmotionStatTuning.PlayerMaxEmotionLevel) * 100f;
 
+    /// <summary>
+    /// Fear currently has a single tier, so it is always its own final tier. Scaling is disabled
+    /// so that non-amplifier applications (e.g. Firecracker) can freely reapply/refresh Fear
+    /// instead of being blocked by the capped-final-tier safeguard meant for amplifier-only
+    /// promotion.
+    /// </summary>
+    public override EmotionScalingMode ScalingMode => EmotionScalingMode.Disabled;
+
     protected FearEmotionBase()
     {
         Emotion = EmotionType.Fear;

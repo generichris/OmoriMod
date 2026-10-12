@@ -136,15 +136,16 @@ public class EmotionPlayer : ModPlayer, IEmotionEntity
         if (!emotionType.HasValue
             || !EmotionSystem.IsFinalEmotionTier(emotionType.Value)
             || ModContent.GetModBuff(emotionType.Value) is not EmotionBuff emotionBuff
-            || emotionBuff.ScalingMode != EmotionScalingMode.Capped
-            || EmotionSystem.GetMaxEmotionTier(emotionBuff.Emotion) is not int maxTier)
+            || emotionBuff.ScalingMode != EmotionScalingMode.Capped)
         {
             ScalingEmotion = EmotionType.None;
             ScalingEmotionLevel = 0;
             return;
         }
 
-        EnsureScalingEmotion(emotionBuff.Emotion, maxTier);
+        EnsureScalingEmotion(
+            emotionBuff.Emotion,
+            EmotionSystem.GetMaxEmotionTier(emotionBuff.Emotion).Value);
     }
 
     /// <summary>Clears transient emotion state and restores valid final-tier scaling state each tick.</summary>

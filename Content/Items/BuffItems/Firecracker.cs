@@ -1,5 +1,6 @@
 using OmoriMod.Content.Buffs.Abstract;
 using OmoriMod.Content.Items.Abstract_Classes;
+using OmoriMod.Content.Items.Abstract_Classes.BaseClasses;
 using OmoriMod.Content.Items.Abstract_Classes.Emotion_Classes;
 using OmoriMod.Content.Items.BuffItems;
 using OmoriMod.Content.Players;
@@ -13,6 +14,10 @@ namespace OmoriMod.Content.Items.BuffItems;
 
 public class Firecracker : EmotionBuffItem
 {
+    Firecracker()
+    {
+        itemTypeForResearch = ItemTypeForResearch.BuffPotion;
+    }
     public override void SetDefaults()
     {
         SetEmotionType(EmotionType.Fear);
